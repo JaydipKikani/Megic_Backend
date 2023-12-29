@@ -27,7 +27,7 @@ const createCompany = async (req, res) => {
     res.status(201).json({
       status: true,
       error: false,
-      msg: "company created successfully",
+      msg: "company created successfully.",
       data: {
         company,
         billing,
