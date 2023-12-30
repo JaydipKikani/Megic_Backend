@@ -1,12 +1,13 @@
 const express = require("express");
+
+const multer = require("multer");
+const { storage } = require("../index");
 const {
   createCustomer,
   updateCustomer,
   deleteCustomer,
   getCustomer,
-} = require("../controllers/customer");
-const multer = require("multer");
-const { storage } = require("../index");
+} = require("../controllers/customer/customer");
 
 const upload = multer({ storage: storage });
 

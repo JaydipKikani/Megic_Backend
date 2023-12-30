@@ -10,14 +10,14 @@ const authntication = (req, res, next) => {
       res.status(401).json({
         status: false,
         error: true,
-        msg: "unauthorized",
+        msg: "unauthorized token",
       });
     }
   } else {
-    res.status(500).json({
+    res.status(401).json({
       status: false,
       error: true,
-      msg: "internal server error",
+      msg: "please provide authorization token",
     });
   }
 };

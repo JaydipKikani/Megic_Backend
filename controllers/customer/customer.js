@@ -1,6 +1,7 @@
-const Customer = require("../models/customer");
+
 const fs = require("fs");
 const path = require("path");
+const Customer = require("../../models/customer");
 
 const getCustomer = async (req, res) => {
   try {

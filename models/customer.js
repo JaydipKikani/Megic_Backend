@@ -37,59 +37,6 @@ const customerSchema = mongoose.Schema(
       required: true,
       enum: ["member1", "member2", "member3"],
     },
-    // customeType: {
-    //   type: String,
-    //   required: true,
-    // },
-    // postalCode: {
-    //   type: String,
-    //   required: true,
-    //   min: 6,
-    //   validate: {
-    //     validator: function (value) {
-    //       return /^[0-9]{5}$/.test(value);
-    //     },
-    //     message: "Invalid postal code",
-    //   },
-    // },
-    // address: {
-    //   type: String,
-    //   required: true,
-    // },
-    // city: {
-    //   type: String,
-    //   required: true,
-    // },
-    // country: {
-    //   type: String,
-    //   required: true,
-    // },
-    // subscription: {
-    //   type: String,
-    //   required: true,
-    // },
-    // driverInfo: {
-    //   fullName: {
-    //     type: String,
-    //     required: true,
-    //   },
-    //   address: {
-    //     type: String,
-    //     required: true,
-    //   },
-    //   phoneNumber: {
-    //     type: String,
-    //     required: true,
-    //   },
-    //   email: {
-    //     type: String,
-    //     required: true,
-    //   },
-    // },
-    // birthDate: {
-    //   type: Date,
-    //   required: true,
-    // },
   },
   {
     timestamps: true,

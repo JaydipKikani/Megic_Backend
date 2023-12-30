@@ -38,7 +38,7 @@ const billingInformationSchema = mongoose.Schema({
 
 const bankigInformationSchema = mongoose.Schema({
   bankname: String,
-  accountname: String,
+  vatno: String,
   iban: String,
   bic: String,
   regno: String,

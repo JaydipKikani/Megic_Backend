@@ -1,5 +1,5 @@
-const User = require("../models/user");
-const { createToken } = require("../services/token");
+const User = require("../../models/user");
+const { createToken } = require("../../services/token");
 
 const checkUser = async (req, res) => {
   const user = req.body;
