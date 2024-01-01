@@ -1,17 +1,16 @@
 const {
-  companyInfo,
-  billingInformation,
-  bankingInformation,
-  miscSetting,
+  CompanyInfo,
+  BillingInformation,
+  BankingInformation,
 } = require("../../models/company");
+const { MiscSetting } = require("../../models/subscription");
 
 const getCompany = async (req, res) => {
   const { id } = req.params;
   try {
-    const company = await companyInfo.findOne({ _id: id });
-    const billing = await billingInformation.findOne({ compid: id });
-    const banking = await bankingInformation.findOne({ compid: id });
-    const misc = await miscSetting.findOne({ compid: id });
+    const company = await CompanyInfo.findOne({ _id: id });
+    const billing = await BillingInformation.findOne({ compid: id });
+    const banking = await BankingInformation.findOne({ compid: id });
     res.status(200).json({
       status: true,
       error: false,
@@ -20,7 +19,6 @@ const getCompany = async (req, res) => {
         company,
         billing,
         banking,
-        misc,
       },
     });
   } catch (err) {

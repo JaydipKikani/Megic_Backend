@@ -1,8 +1,7 @@
 const {
-  companyInfo,
-  billingInformation,
-  bankingInformation,
-  miscSetting,
+  CompanyInfo,
+  BankingInformation,
+  BillingInformation,
 } = require("../../models/company");
 const {
   getDuplicateErrorMessage,
@@ -21,23 +20,17 @@ const createCompany = async (req, res) => {
   }
   try {
     let company, billing, banking, misc;
-    company = await companyInfo.create(compnayDetails);
+    company = await CompanyInfo.create(compnayDetails);
     if (billingInfo) {
-      billing = await billingInformation.create({
+      billing = await BillingInformation.create({
         ...billingInfo,
         compid: company._id,
       });
     }
 
     if (bankingInfo) {
-      banking = await bankingInformation.create({
+      banking = await BankingInformation.create({
         ...bankingInfo,
-        compid: company._id,
-      });
-    }
-    if (miscSett) {
-      misc = await miscSetting.create({
-        ...miscSett,
         compid: company._id,
       });
     }

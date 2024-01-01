@@ -7,6 +7,8 @@ const multer = require("multer");
 const { userRouter } = require("./routes/user");
 const { authntication } = require("./middlewares/auth");
 const { companyRouter } = require("./routes/company");
+const { subscriptionRoute } = require("./routes/subscription");
+const { companyDataRouter } = require("./routes/settings");
 
 dotenv.config({
   path: "./.env",
@@ -46,9 +48,11 @@ app.use("/api/v1/user", userRouter);
 // company routes
 app.use("/api/v1/company", authntication, companyRouter);
 
-app.get("/", (req, res) => {
-  res.send("Hello World!");
-});
+//subscription routes
+app.use("/api/v1/subscription", authntication, subscriptionRoute);
+
+// settings company routes
+app.use("/api/v1/settings/", authntication, companyDataRouter);
 
 mongoose.connect(process.env.CONNECT_STRING).then((connection) => {
   console.log("Connected to MongoDB");

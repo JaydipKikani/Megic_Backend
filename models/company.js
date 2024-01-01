@@ -51,41 +51,22 @@ const bankigInformationSchema = mongoose.Schema({
   },
 });
 
-const miscSettingSchema = mongoose.Schema({
-  admin_cost: String,
-  add_cost: String,
-  svarnish: String,
-  lvarnish: String,
-  redowheel: String,
-  compid: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Company",
-  },
-});
+const CompanyInfo = mongoose.model("Company", compnayDetailsSchema, "Company");
 
-const companyInfo = mongoose.model("Company", compnayDetailsSchema, "Company");
-
-const billingInformation = mongoose.model(
+const BillingInformation = mongoose.model(
   "BillingInformation",
   billingInformationSchema,
   "BillingInformation"
 );
 
-const bankingInformation = mongoose.model(
+const BankingInformation = mongoose.model(
   "BankingInformation",
   bankigInformationSchema,
   "BankingInformation"
 );
 
-const miscSetting = mongoose.model(
-  "MiscSetting",
-  miscSettingSchema,
-  "MiscSetting"
-);
-
 module.exports = {
-  companyInfo,
-  billingInformation,
-  bankingInformation,
-  miscSetting,
+  CompanyInfo,
+  BillingInformation,
+  BankingInformation,
 };

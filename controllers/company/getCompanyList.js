@@ -1,9 +1,8 @@
-const { companyInfo } = require("../../models/company");
+const { CompanyInfo } = require("../../models/company");
 
 const getCompanyList = async (req, res) => {
   try {
-    const company = await companyInfo.find().select("name _id");
-    console.log(company);
+    const company = await CompanyInfo.find().select("name _id");
     res.status(200).json({
       status: true,
       error: false,

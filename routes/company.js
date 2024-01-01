@@ -14,6 +14,7 @@ router.patch("/:id", updateCompany);
 router.delete("/:id", deleteCompany);
 
 router.get("/:id", getCompany);
+
 router.get("/", getCompanyList);
 
 module.exports = {

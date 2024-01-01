@@ -1,23 +1,21 @@
 const {
-  companyInfo,
-  billingInformation,
-  bankingInformation,
-  miscSetting,
+  CompanyInfo,
+  BillingInformation,
+  BankingInformation,
 } = require("../../models/company");
 
 const deleteCompany = async (req, res) => {
   const { id } = req.params;
   try {
     let company, billing, banking, misc;
-    company = await companyInfo.findOneAndDelete({ _id: id });
+    company = await CompanyInfo.findOneAndDelete({ _id: id });
     if (company !== null) {
-      billing = await billingInformation.findOneAndDelete({
+      billing = await BillingInformation.findOneAndDelete({
         compid: id,
       });
-      banking = await bankingInformation.findOneAndDelete({
+      banking = await BankingInformation.findOneAndDelete({
         compid: id,
       });
-      misc = await miscSetting.findOneAndDelete({ compid: id });
 
       res.status(200).json({
         status: true,

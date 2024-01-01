@@ -1,9 +1,9 @@
 const {
-  companyInfo,
-  billingInformation,
-  bankingInformation,
-  miscSetting,
+  CompanyInfo,
+  BillingInformation,
+  BankingInformation,
 } = require("../../models/company");
+const { MiscSetting } = require("../../models/subscription");
 const { getDuplicateErrorMessage } = require("../../services/validation");
 
 const updateCompany = async (req, res) => {
@@ -20,41 +20,54 @@ const updateCompany = async (req, res) => {
 
   try {
     let company, billing, banking, misc;
-    
 
-    company = await companyInfo.findOneAndUpdate({ _id: id }, compnayDetails, {
-      new: true,
-    });
-    if (billingInfo) {
-      billing = await billingInformation.findOneAndUpdate(
-        { compid: id },
-        billingInfo,
-        { new: true }
+    const getCompany = await CompanyInfo.findById(id);
+
+    if (getCompany !== null) {
+      company = await CompanyInfo.findOneAndUpdate(
+        { _id: id },
+        compnayDetails,
+        {
+          new: true,
+        }
       );
-    }
-    if (bankingInfo) {
-      banking = await bankingInformation.findOneAndUpdate(
-        { compid: id },
-        bankingInfo,
-        { new: true }
-      );
-    }
-    if (miscSett) {
-      misc = await miscSetting.findOneAndUpdate({ compid: id }, miscSett, {
-        new: true,
+      if (billingInfo) {
+        billing = await BillingInformation.findOneAndUpdate(
+          { compid: id },
+          billingInfo,
+          { new: true }
+        );
+      }
+      if (bankingInfo) {
+        banking = await BankingInformation.findOneAndUpdate(
+          { compid: id },
+          bankingInfo,
+          { new: true }
+        );
+      }
+      if (miscSett) {
+        misc = await MiscSetting.findOneAndUpdate({ compid: id }, miscSett, {
+          new: true,
+        });
+      }
+      res.status(200).json({
+        status: true,
+        error: false,
+        msg: "company details updated successfully.",
+        data: {
+          company,
+          billing,
+          banking,
+          misc,
+        },
+      });
+    } else {
+      res.status(404).json({
+        status: false,
+        error: true,
+        msg: "company not found",
       });
     }
-    res.status(200).json({
-      status: true,
-      error: false,
-      msg: "company details updated successfully.",
-      data: {
-        company,
-        billing,
-        banking,
-        misc,
-      },
-    });
   } catch (err) {
     let errors = "";
     if (err.code === 11000 && err.keyPattern && err.keyValue) {
