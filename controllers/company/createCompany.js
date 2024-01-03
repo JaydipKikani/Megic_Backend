@@ -35,7 +35,7 @@ const createCompany = async (req, res) => {
       });
     }
 
-    res.status(201).json({
+    return res.status(201).json({
       status: true,
       error: false,
       msg: "company created successfully.",
@@ -51,19 +51,26 @@ const createCompany = async (req, res) => {
     if (err.code === 11000 && err.keyPattern && err.keyValue) {
       const errorMessage = getDuplicateErrorMessage(err);
       errors = errorMessage;
+      return res.status(422).json({
+        status: false,
+        error: true,
+        msg: errors,
+      });
+    } else if (err.name === "ValidationError") {
+      errors = requireFieldErrorMessege(err);
+      return res.status(422).json({
+        status: false,
+        error: true,
+        msg: errors,
+      });
     } else {
-      if (err.name === "ValidationError") {
-        // Object.keys(err.errors).forEach((key) => {
-        //   errors = err.errors[key].message;
-        // });
-        errors = requireFieldErrorMessege(err);
-      }
+      console.log(err);
+      return res.status(500).json({
+        status: false,
+        error: true,
+        msg: "Internal server error",
+      });
     }
-    res.status(500).json({
-      status: false,
-      error: true,
-      msg: errors,
-    });
   }
 };
 

@@ -29,17 +29,17 @@ const deleteCompany = async (req, res) => {
         },
       });
     } else {
-      res.status(404).json({
+      return res.status(404).json({
         status: false,
         error: true,
         msg: "company not found",
       });
     }
   } catch (err) {
-    res.status(404).json({
+    return res.status(500).json({
       status: false,
       error: true,
-      msg: "company not found",
+      msg: "Internal Server Error",
     });
   }
 };

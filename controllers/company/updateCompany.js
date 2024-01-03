@@ -4,12 +4,14 @@ const {
   BankingInformation,
 } = require("../../models/company");
 const { MiscSetting } = require("../../models/subscription");
-const { getDuplicateErrorMessage } = require("../../services/validation");
+const {
+  getDuplicateErrorMessage,
+  requireFieldErrorMessege,
+} = require("../../services/validation");
 
 const updateCompany = async (req, res) => {
   const { id } = req.params;
-  const { compnayDetails, billingInfo, bankingInfo, miscSett, ...extraKeys } =
-    req.body;
+  const { compnayDetails, billingInfo, bankingInfo, ...extraKeys } = req.body;
   if (Object.keys(extraKeys).length > 0) {
     return res.status(400).json({
       status: false,
@@ -45,11 +47,6 @@ const updateCompany = async (req, res) => {
           { new: true }
         );
       }
-      if (miscSett) {
-        misc = await MiscSetting.findOneAndUpdate({ compid: id }, miscSett, {
-          new: true,
-        });
-      }
       res.status(200).json({
         status: true,
         error: false,
@@ -73,16 +70,24 @@ const updateCompany = async (req, res) => {
     if (err.code === 11000 && err.keyPattern && err.keyValue) {
       const errorMessage = getDuplicateErrorMessage(err);
       errors = errorMessage;
-      res.status(500).json({
+      return res.status(422).json({
+        status: false,
+        error: true,
+        msg: errors,
+      });
+    } else if (err.name === "ValidationError") {
+      errors = requireFieldErrorMessege(err);
+      return res.status(422).json({
         status: false,
         error: true,
         msg: errors,
       });
     } else {
-      res.status(404).json({
+      console.log(err);
+      return res.status(500).json({
         status: false,
         error: true,
-        msg: "company not found",
+        msg: "Internal server error",
       });
     }
   }

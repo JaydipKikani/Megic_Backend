@@ -9,6 +9,7 @@ const { authntication } = require("./middlewares/auth");
 const { companyRouter } = require("./routes/company");
 const { subscriptionRoute } = require("./routes/subscription");
 const { companyDataRouter } = require("./routes/settings");
+const connectionToDB = require("./db/connection");
 
 dotenv.config({
   path: "./.env",
@@ -23,19 +24,6 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use("/assets", express.static("assets"));
 
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "assets"); // Destination directory where files will be stored
-  },
-  filename: function (req, file, cb) {
-    // Define the filename for uploaded files
-    cb(
-      null,
-      file.fieldname + "-" + Date.now() + path.extname(file.originalname)
-    );
-    // Example: fieldname-1627633861696.jpg
-  },
-});
 
 // define all routes
 
@@ -54,14 +42,8 @@ app.use("/api/v1/subscription", authntication, subscriptionRoute);
 // settings company routes
 app.use("/api/v1/settings/", authntication, companyDataRouter);
 
-mongoose.connect(process.env.CONNECT_STRING).then((connection) => {
-  console.log("Connected to MongoDB");
+connectionToDB(process.env.MONGO_URL).then(() => {
+  app.listen(process.env.PORT, () => {
+    console.log(`Server running on port ${process.env.PORT}`);
+  });
 });
-
-app.listen(process.env.PORT, () => {
-  console.log(`Server running on port ${process.env.PORT}`);
-});
-
-module.exports = {
-  storage: storage,
-};

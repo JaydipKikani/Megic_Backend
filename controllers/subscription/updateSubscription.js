@@ -40,10 +40,10 @@ const updateSubscription = async (req, res) => {
           new: true,
         }
       );
-      if (data.miskSetting) {
+      if (data.miscSetting) {
         miskSetting = await MiscSetting.findOneAndUpdate(
           { sub_id: id },
-          data.miskSetting,
+          data.miscSetting,
           {
             new: true,
           }
@@ -67,19 +67,27 @@ const updateSubscription = async (req, res) => {
     }
   } catch (err) {
     let errors = "";
-    console.log("error in update", err);
-    if (err.name === "ValidationError") {
+    if (err.code === 11000 && err.keyPattern && err.keyValue) {
+      const errorMessage = getDuplicateErrorMessage(err);
+      errors = errorMessage;
+      return res.status(422).json({
+        status: false,
+        error: true,
+        msg: errors,
+      });
+    } else if (err.name === "ValidationError") {
       errors = requireFieldErrorMessege(err);
-      res.status(401).json({
+      return res.status(422).json({
         status: false,
         error: true,
         msg: errors,
       });
     } else {
-      res.status(500).json({
+      console.log(err);
+      return res.status(500).json({
         status: false,
         error: true,
-        msg: "internal error",
+        msg: "Internal server error",
       });
     }
   }

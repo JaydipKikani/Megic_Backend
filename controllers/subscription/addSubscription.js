@@ -1,7 +1,7 @@
 const { Subscriptions } = require("../../models/subscription");
 
 const { MiscSetting } = require("../../models/subscription");
-const { requireFieldErrorMessege } = require("../../services/validation");
+const { requireFieldErrorMessege, getDuplicateErrorMessage } = require("../../services/validation");
 
 const addSubscription = async (req, res) => {
   const data = req.body;
@@ -9,9 +9,9 @@ const addSubscription = async (req, res) => {
   try {
     let newMisc;
     const newSubscription = await Subscriptions.create(data);
-    if (data.miscSett) {
+    if (data.miscSetting) {
       newMisc = await MiscSetting.create({
-        ...data.miscSett,
+        ...data.miscSetting,
         sub_id: newSubscription._id,
       });
     }
@@ -25,20 +25,28 @@ const addSubscription = async (req, res) => {
       },
     });
   } catch (err) {
-    console.error("Error in adding subscription:", err);
     let errors = "";
-    if (err.name === "ValidationError") {
+    if (err.code === 11000 && err.keyPattern && err.keyValue) {
+      const errorMessage = getDuplicateErrorMessage(err);
+      errors = errorMessage;
+      return res.status(422).json({
+        status: false,
+        error: true,
+        msg: errors,
+      });
+    } else if (err.name === "ValidationError") {
       errors = requireFieldErrorMessege(err);
-      res.status(401).json({
+      return res.status(422).json({
         status: false,
         error: true,
         msg: errors,
       });
     } else {
-      res.status(500).json({
+      console.log(err);
+      return res.status(500).json({
         status: false,
         error: true,
-        msg: "internal error",
+        msg: "Internal server error",
       });
     }
   }

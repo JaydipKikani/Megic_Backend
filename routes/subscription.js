@@ -11,10 +11,15 @@ const {
 const {
   getSubscription,
 } = require("../controllers/subscription/getSubscription");
+const {
+  getSubscriptionList,
+} = require("../controllers/subscription/getSubscriptionList");
 
 const router = Router();
 
 router.get("/:id", getSubscription);
+
+router.get("/getsubbyid/:id", getSubscriptionList);
 
 router.post("/", addSubscription);
 

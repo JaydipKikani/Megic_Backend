@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-
+// Company API
 const compnayDetailsSchema = mongoose.Schema({
   name: {
     type: String,

@@ -2,11 +2,11 @@ const mongoose = require("mongoose");
 
 const customerSchema = mongoose.Schema(
   {
-    firstName: {
+    firstname: {
       type: String,
       required: true,
     },
-    name: {
+    lastname: {
       type: String,
       required: true,
     },
@@ -22,9 +22,8 @@ const customerSchema = mongoose.Schema(
       },
     },
     contact: {
-      type: String,
+      type: Number,
       required: true,
-      min: 10,
       validate: {
         validator: function (value) {
           return /^[0-9]{10}$/.test(value);
@@ -32,10 +31,50 @@ const customerSchema = mongoose.Schema(
         message: "Invalid contact",
       },
     },
-    member: {
-      type: String,
+    comp_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Company",
       required: true,
-      enum: ["member1", "member2", "member3"],
+    },
+    cust_type: {
+      type: String,
+
+    },
+    postal_code: {
+      type: Number,
+    },
+    address: {
+      type: String,
+    },
+    city: {
+      type: String,
+    },
+    country: {
+      type: String,
+    },
+    sub_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Subscriptions",
+    },
+
+    driverInfo: {
+      name: {
+        type: String,
+      },
+      address: {
+        type: String,
+      },
+      phone: {
+        type: String,
+      },
+      email: {
+        type: String,
+      },
+    },
+
+    dob: Date,
+    licence: {
+      type: String,
     },
   },
   {
