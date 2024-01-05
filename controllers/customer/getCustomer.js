@@ -25,7 +25,9 @@ const getCustomer = async (req, res) => {
 const getCustomerById = async (req, res) => {
   const { id } = req.params;
   try {
-    const customer = await Customer.findById(id).populate("comp_id", "name");
+    const customer = await Customer.findById(id)
+      .populate("comp_id", "name")
+      .populate("sub_id", "subscription_name");
 
     if (customer !== null) {
       return res.status(200).json({
