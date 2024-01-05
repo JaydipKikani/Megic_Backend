@@ -1,63 +1,10 @@
-const Customer = require("../../models/customer");
+const { Customer } = require("../../models/customer");
 
 const getCustomer = async (req, res) => {
   try {
-    const customers = await Customer.aggregate([
-      {
-        $project: {
-          _id: 1,
-          firstname: 1,
-          lastname: 1,
-          cust_type: 1,
-          email: 1,
-          city: 1,
-          country: 1,
-          comp_id: 1,
-          sub_id: 1,
-        },
-      },
-      {
-        $lookup: {
-          from: "Company", // Assuming the name of the company collection is 'companies'
-          localField: "comp_id",
-          foreignField: "_id",
-          as: "companyInfo",
-        },
-      },
-      {
-        $lookup: {
-          from: "Subscriptions", // Assuming the name of the subscription collection is 'subscriptions'
-          localField: "sub_id",
-          foreignField: "_id",
-          as: "subscriptionInfo",
-        },
-      },
-      {
-        $unwind: {
-          path: "$companyInfo",
-          preserveNullAndEmptyArrays: true,
-        },
-      },
-      {
-        $unwind: {
-          path: "$subscriptionInfo",
-          preserveNullAndEmptyArrays: true,
-        },
-      },
-      {
-        $project: {
-          _id: 1,
-          firstname: 1,
-          lastname: 1,
-          cust_type: 1,
-          email: 1,
-          city: 1,
-          country: 1,
-          company_name: "$companyInfo.name",
-          subscription_name: "$subscriptionInfo.subscription_name",
-        },
-      },
-    ]);
+    const customers = await Customer.find()
+      .populate("comp_id", "name")
+      .populate("sub_id", "subscription_name");
 
     return res.status(200).json({
       status: true,
@@ -78,7 +25,8 @@ const getCustomer = async (req, res) => {
 const getCustomerById = async (req, res) => {
   const { id } = req.params;
   try {
-    const customer = await Customer.findById(id);
+    const customer = await Customer.findById(id).populate("comp_id", "name");
+
     if (customer !== null) {
       return res.status(200).json({
         status: true,

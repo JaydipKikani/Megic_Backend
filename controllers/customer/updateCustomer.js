@@ -1,4 +1,4 @@
-const Customer = require("../../models/customer");
+const { Customer, Driver } = require("../../models/customer");
 const {
   getDuplicateErrorMessage,
   requireFieldErrorMessege,
@@ -17,6 +17,14 @@ const updateCustomer = async (req, res) => {
       const updatedCustomer = await Customer.findByIdAndUpdate(id, customer, {
         new: true,
       });
+      const updateDriver = await Driver.findOneAndUpdate(
+        { cust_id: id },
+        customer,
+        {
+          new: true,
+        }
+      );
+
       if (req.file) {
         fs.rename(
           `./assets/licence/${file.filename}`,
@@ -38,7 +46,10 @@ const updateCustomer = async (req, res) => {
         status: true,
         error: false,
         msg: "customer updated successfully.",
-        data: updatedCustomer,
+        data: {
+          customer: updatedCustomer,
+          driver: updateDriver,
+        },
       });
     } else {
       return res.status(404).json({

@@ -1,15 +1,25 @@
-const { Subscriptions } = require("../../models/subscription");
+const { Subscriptions, MiscSetting } = require("../../models/subscription");
 
 const getSubscription = async (req, res) => {
   const { id } = req.params;
 
   try {
-    const subsciption = await Subscriptions.findById(id);
+    const subsciption = await Subscriptions.findById(id)
+      .populate({
+        path: "comp_id",
+        select: "name",
+      });
+    const miscSetting = await MiscSetting.findOne({ sub_id: id });
+    const responseData = {
+      subscription: subsciption,
+      miscSetting: miscSetting,
+    };
+
     res.status(200).json({
       status: true,
       error: false,
       msg: "subsciption information gets successfully",
-      data: subsciption,
+      data: responseData,
     });
   } catch (err) {
     res.status(404).json({

@@ -10,6 +10,7 @@ const { companyRouter } = require("./routes/company");
 const { subscriptionRoute } = require("./routes/subscription");
 const { companyDataRouter } = require("./routes/settings");
 const connectionToDB = require("./db/connection");
+const { Customer } = require("./models/customer");
 
 dotenv.config({
   path: "./.env",
@@ -23,7 +24,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use("/assets", express.static("assets"));
-
 
 // define all routes
 

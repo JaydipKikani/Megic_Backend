@@ -9,7 +9,11 @@ const comman_category = {
 };
 
 const subscriptionsScehma = mongoose.Schema({
-  comp_id: { type: mongoose.Schema.Types.ObjectId, required: true },
+  comp_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+    ref: "Company",
+  },
   subscription_name: {
     type: String,
     required: true,

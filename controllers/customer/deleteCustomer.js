@@ -1,4 +1,4 @@
-const Customer = require("../../models/customer");
+const { Customer, Driver } = require("../../models/customer");
 const fs = require("fs");
 
 const deleteCustomer = async (req, res) => {
@@ -6,10 +6,10 @@ const deleteCustomer = async (req, res) => {
 
   try {
     const deletedCustomer = await Customer.findOneAndDelete({ _id: id });
+    const deleteDriver = await Driver.findOneAndDelete({ cust_id: id });
 
     // Check if the customer was found and then construct the file path
     if (deletedCustomer !== null) {
-      
       fs.unlink(`.${deletedCustomer?.licence}`, (err) => {
         console.log("deleteing....");
         if (err) {
@@ -23,7 +23,10 @@ const deleteCustomer = async (req, res) => {
         status: true,
         error: false,
         msg: "Customer deleted successfully.",
-        data: deletedCustomer,
+        data: {
+          customer: deletedCustomer,
+          driver: deleteDriver,
+        },
       });
 
       // Check if the file exists before attempting to unlink it

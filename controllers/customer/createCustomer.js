@@ -1,4 +1,4 @@
-const Customer = require("../../models/customer");
+const { Customer, Driver } = require("../../models/customer");
 const fs = require("fs");
 
 const {
@@ -8,11 +8,17 @@ const {
 
 const createCustomer = async (req, res) => {
   const customer = req.body;
-  const file = req?.file;
+  const file = req.file;
+  const { driver_name, driver_email, driver_phone, driver_dob } = customer;
   try {
-    // handle profile imge here
-
     const newCustomer = await Customer.create({ ...customer });
+    const newDriver = await Driver.create({
+      driver_name,
+      driver_email,
+      driver_phone,
+      driver_dob,
+      cust_id:newCustomer._id,
+    });
     if (newCustomer !== null) {
       if (req.file) {
         const imgPath = `/assets/licence/${newCustomer._id}${file.filename}`;
@@ -39,7 +45,10 @@ const createCustomer = async (req, res) => {
         status: true,
         error: false,
         msg: "customer created successfully.",
-        data: newCustomer,
+        data: {
+          newCustomer: newCustomer,
+          newDriver: newDriver,
+        },
       });
     }
   } catch (err) {
