@@ -11,6 +11,11 @@ const { subscriptionRoute } = require("./routes/subscription");
 const { companyDataRouter } = require("./routes/settings");
 const connectionToDB = require("./db/connection");
 const { Customer } = require("./models/customer");
+const { fuelRouter } = require("./routes/fueltype");
+const { manufacturerRouter } = require("./routes/manufacturers");
+const { modelRouter } = require("./routes/model");
+const { vehicleRouter } = require("./routes/vehicle");
+const { documentRoute } = require("./routes/document");
 
 dotenv.config({
   path: "./.env",
@@ -41,6 +46,21 @@ app.use("/api/v1/subscription", authntication, subscriptionRoute);
 
 // settings company routes
 app.use("/api/v1/settings/", authntication, companyDataRouter);
+
+// fuel routes
+app.use("/api/v1/fueltype", authntication, fuelRouter);
+
+// manufacturerRouter routes
+app.use("/api/v1/manufacturers", authntication, manufacturerRouter);
+
+// Model routes
+app.use("/api/v1/model", authntication, modelRouter);
+
+// Vehicle routes
+app.use("/api/v1/vehicle", authntication, vehicleRouter);
+
+// Document routes
+app.use("/api/v1/document", authntication, documentRoute);
 
 connectionToDB(process.env.MONGO_URL).then(() => {
   app.listen(process.env.PORT, () => {
