@@ -12,7 +12,7 @@ const deleteCustomer = async (req, res) => {
     if (deletedCustomer !== null) {
       fs.unlink(`.${deletedCustomer?.licence}`, (err) => {
         console.log("deleteing....");
-        if (err) {
+          if (err) {
           console.log("error while deleting file: " + err);
         } else {
           console.log("successfully deleted file");

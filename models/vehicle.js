@@ -8,6 +8,25 @@ const fuelTypeSchema = new mongoose.Schema({
 const FuelType = mongoose.model('FuelType', fuelTypeSchema);
 
 
+// vehicleCategory schema for fuel_type
+const vehicleCategorySchema = new mongoose.Schema({
+    name: {
+        type: String,
+        required: true
+    }
+});
+
+const VehicleCategory = mongoose.model('VehicleCategory', vehicleCategorySchema);
+
+const FinanceTypesSchema = new mongoose.Schema({
+    name: {
+        type: String,
+        required: true
+    }
+});
+
+const FinanceTypes = mongoose.model('FinanceType', FinanceTypesSchema);
+
 // Define schema for manufacturer
 const manufacturerSchema = new mongoose.Schema({
     name: String
@@ -18,7 +37,7 @@ const Manufacturer = mongoose.model('Manufacturer', manufacturerSchema);
 
 // Define schema for model
 const modelSchema = new mongoose.Schema({
-    name: String,
+            name: String,
     manufacturer: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Manufacturer'
@@ -54,6 +73,7 @@ const insuranceInfoSchema = new mongoose.Schema({
     issuer: String,
     date_issue: { type: Date, required: true },
     support_contact: String,
+    info: String,
     flight_franchise: String,
     franchise_crash: String,
     total_claims: Number
@@ -86,6 +106,7 @@ const FinancialInfo = mongoose.model('FinancialInfo', financialInfoSchema);
 // Define schema for general
 const generalSchema = new mongoose.Schema({
     general_info: { type: mongoose.Schema.Types.ObjectId, ref: 'GeneralInfo', required: true },
+    company: { type: mongoose.Schema.Types.ObjectId, ref: 'Company', required: true },
     manufacturer: { type: mongoose.Schema.Types.ObjectId, ref: 'Manufacturer', required: true },
     model: { type: mongoose.Schema.Types.ObjectId, ref: 'Model', required: true },
     vehicle_category: { type: mongoose.Schema.Types.ObjectId, ref: 'VehicleCategory', required: true },
@@ -93,7 +114,7 @@ const generalSchema = new mongoose.Schema({
     year: Number,
     color: String,
     status: String,
-    active: Boolean,
+    active: String,
     min_age_driver: { type: Number, required: true },
     license_class: String
 });
@@ -131,6 +152,8 @@ const Document = mongoose.model('Document', documentSchema);
 
 module.exports = {
     FuelType,
+    VehicleCategory,
+    FinanceTypes,
     GeneralInfo,
     InsuranceInfo,
     Variables,

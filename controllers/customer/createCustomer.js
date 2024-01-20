@@ -17,7 +17,7 @@ const createCustomer = async (req, res) => {
       driver_email,
       driver_phone,
       driver_dob,
-      cust_id:newCustomer._id,
+      cust_id: newCustomer._id,
     });
     if (newCustomer !== null) {
       if (req.file) {

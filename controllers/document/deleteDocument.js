@@ -27,7 +27,7 @@ const deleteDocument = async (req, res) => {
         await Document.findByIdAndDelete(id);
 
         return res.status(422).json({
-            status: false,
+            status   : false,
             error: true,
             msg: 'Document deleted successfully'
         });

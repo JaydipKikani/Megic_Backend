@@ -43,7 +43,7 @@ const createCompany = async (req, res) => {
         company,
         billing,
         banking,
-        misc,
+        misc, 
       },
     });
   } catch (err) {
@@ -64,7 +64,6 @@ const createCompany = async (req, res) => {
         msg: errors,
       });
     } else {
-      console.log(err);
       return res.status(500).json({
         status: false,
         error: true,

@@ -21,7 +21,7 @@ const addDocument = async (req, res) => {
         // Fetch the saved document with limited fields
         const responseDocument = await Document.findById(savedDocument._id).select('general_info document _id');
 
-
+        
         return res.status(422).json({
             status: false,
             error: true,

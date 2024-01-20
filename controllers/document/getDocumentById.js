@@ -12,9 +12,9 @@ const getDocumentById = async (req, res) => {
                 msg: 'Document not found.',
             });
         }
-        return res.status(422).json({
-            status: false,
-            error: true,
+        return res.status(200).json({
+            status: true,
+            error: false,
             msg: 'Get Document List successfully',
             data: document,
         });
@@ -23,11 +23,11 @@ const getDocumentById = async (req, res) => {
         return res.status(500).json({
             status: false,
             error: true,
-            msg: error.message,
+                msg: error.message,
         });
     }
 };
-
+    
 module.exports = {
     getDocumentById,
 };

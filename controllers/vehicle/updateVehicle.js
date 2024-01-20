@@ -8,8 +8,7 @@ const {
     FinancialInfo,
     General,
     DamageMaintenance,
-    Damage,
-    Document
+    Damage
 } = require("../../models/vehicle");
 
 const updateVehicle = async (req, res) => {
@@ -66,12 +65,6 @@ const updateVehicle = async (req, res) => {
             return savedDamage;
         }));
 
-        // Update data in Document
-        const updatedDocument = await Document.findOneAndUpdate(
-            { general_info: generalInfoId },
-            { $set: req.body.document },
-            { new: true }
-        );
 
         await session.commitTransaction();
         session.endSession();
@@ -86,8 +79,7 @@ const updateVehicle = async (req, res) => {
                 FinancialInfo: updatedFinancialInfo,
                 General: updatedGeneral,
                 DamageMaintenance: updatedDamageMaintenance,
-                Damages: updatedDamages,
-                Document: updatedDocument
+                Damages: updatedDamages
             }
         });
     } catch (error) {

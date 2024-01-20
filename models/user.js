@@ -14,6 +14,30 @@ const userSchema = new mongoose.Schema({
     required: true,
     unique: true,
   },
+  company: {
+    type: String,
+  },
+  company_vat: {
+    type: String,
+  },
+  phone_no: {
+    type: String,
+  },
+  address: {
+    type: String,
+  },
+  state: {
+    type: String,
+  },
+  zipcode: {
+    type: String,
+  },
+  country: {
+    type: String,
+  },
+  language: {
+    type: String,
+  },
   password: {
     type: String,
     required: true,
@@ -28,6 +52,9 @@ const userSchema = new mongoose.Schema({
   date_validated: {
     type: Date,
     default: Date.now,
+  },
+  profilePhoto: {
+    type: String,
   },
 });
 

@@ -83,7 +83,6 @@ const updateCompany = async (req, res) => {
         msg: errors,
       });
     } else {
-      console.log(err);
       return res.status(500).json({
         status: false,
         error: true,
