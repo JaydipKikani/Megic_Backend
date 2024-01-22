@@ -34,6 +34,5 @@ const deleteInvoiceById = async (req, res) => {
 };
 
 module.exports = {
-    
     deleteInvoiceById
 };

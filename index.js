@@ -70,7 +70,6 @@ app.use("/api/v1/reservation", authntication, reservationRouter);
 // fuel routes
 app.use("/api/v1/invoice", authntication, invoiceRouter);
 
-
 connectionToDB(process.env.MONGO_URL).then(() => {
   app.listen(process.env.PORT, () => {
     console.log(`Server running on port ${process.env.PORT}`);

@@ -14,12 +14,18 @@ const getReservations = async (req, res) => {
         select: "name",
       })
       .populate({
-        path: "vehicle_id",
-        select: "name manufacturer", // Include the fields you want from the Vehicle model
-        populate: {
-          path: "manufacturer",
-          select: "name", // Include the fields you want from the Manufacturer model
-        },
+        path: "general_id",
+        select: "model manufacturer", // Include the fields you want from the General model
+        populate: [
+          {
+            path: "model",
+            select: "name", // Include the fields you want from the Model model
+          },
+          {
+            path: "manufacturer",
+            select: "name", // Include the fields you want from the Manufacturer model
+          },
+        ],
       })
       .populate({
         path: "customer_id",

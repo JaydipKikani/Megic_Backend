@@ -44,6 +44,7 @@ const getVehicleList = async (req, res) => {
 
       //   console.log("generalInfo", generalInfo);
       return {
+        _id:vehicle._id,
         general_id: generalInfo._id, // Assuming _id is the general_id field
         manufacturer: vehicle.manufacturer.name,
         model: vehicle.model.name,
