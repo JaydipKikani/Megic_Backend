@@ -9,11 +9,16 @@ const {
 const createCustomer = async (req, res) => {
   const customer = req.body;
   const file = req.file;
-  const { driver_name, driver_email, driver_phone, driver_dob } = customer;
+  const { driver_first, driver_last, driver_postcode, driver_address,driver_city,driver_country,driver_phone,driver_email,driver_dob  } = customer;
   try {
     const newCustomer = await Customer.create({ ...customer });
     const newDriver = await Driver.create({
-      driver_name,
+      driver_first,
+      driver_last,
+      driver_postcode,
+      driver_address,
+      driver_city,
+      driver_country,
       driver_email,
       driver_phone,
       driver_dob,

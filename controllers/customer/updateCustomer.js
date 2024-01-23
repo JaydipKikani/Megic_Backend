@@ -7,45 +7,83 @@ const fs = require("fs");
 
 const updateCustomer = async (req, res) => {
   const id = req.params.id;
-  const customer = req.body;
+  const customerData = req.body;
+  const {
+    driver_first,
+    driver_last,
+    driver_postcode,
+    driver_address,
+    driver_city,
+    driver_country,
+    driver_phone,
+    driver_email,
+    driver_dob,
+  } = customerData;
   const file = req.file;
 
   try {
     const findCustomer = await Customer.findById(id);
 
     if (findCustomer !== null) {
-      const updatedCustomer = await Customer.findByIdAndUpdate(id, customer, {
+      // Update the customer
+      const updatedCustomer = await Customer.findByIdAndUpdate(id, customerData, {
         new: true,
       });
-      const updateDriver = await Driver.findOneAndUpdate(
-        { cust_id: id },
-        customer,
-        {
-          new: true,
-        }
-      );
 
-      if (req.file) {
+      // Find the corresponding driver using the cust_id
+      let updateDriver = await Driver.findOne({ cust_id: id });
+
+      if (updateDriver) {
+        // If driver exists, update its fields
+        updateDriver.driver_first = driver_first;
+        updateDriver.driver_last = driver_last;
+        updateDriver.driver_postcode = driver_postcode;
+        updateDriver.driver_address = driver_address;
+        updateDriver.driver_city = driver_city;
+        updateDriver.driver_country = driver_country;
+        updateDriver.driver_phone = driver_phone;
+        updateDriver.driver_email = driver_email;
+        updateDriver.driver_dob = driver_dob;
+
+        updateDriver = await updateDriver.save();
+      } else {
+        // If driver does not exist, create a new one
+        updateDriver = await Driver.create({
+          cust_id: id,
+          driver_first,
+          driver_last,
+          driver_postcode,
+          driver_address,
+          driver_city,
+          driver_country,
+          driver_phone,
+          driver_email,
+          driver_dob,
+        });
+      }
+
+      if (file) {
+        // Update the file name based on the customer _id
         fs.rename(
           `./assets/licence/${file.filename}`,
           `./assets/licence/${updatedCustomer._id}${file.filename}`,
           (err) => {
             if (err) {
-              // Handle error while renaming file
               console.log("error updating file: " + err);
               return res.status(500).json({
                 status: false,
                 error: true,
-                msg: "error while updating file file",
-              }); // Exit function early if file handling fails
+                msg: "Error while updating file",
+              });
             }
           }
         );
       }
+
       return res.status(200).json({
         status: true,
         error: false,
-        msg: "customer updated successfully.",
+        msg: "Customer and driver updated successfully.",
         data: {
           customer: updatedCustomer,
           driver: updateDriver,
@@ -55,7 +93,7 @@ const updateCustomer = async (req, res) => {
       return res.status(404).json({
         status: false,
         error: true,
-        msg: "customer not found",
+        msg: "Customer not found",
       });
     }
   } catch (err) {

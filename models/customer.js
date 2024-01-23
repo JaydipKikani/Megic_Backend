@@ -56,10 +56,22 @@ const customerSchema = mongoose.Schema(
 );
 
 const driverSchema = mongoose.Schema({
-  driver_name: {
+  driver_first: {
+    type: String,
+  },
+  driver_last: {
+    type: String,
+  },
+  driver_postcode: {
     type: String,
   },
   driver_address: {
+    type: String,
+  },
+  driver_city: {
+    type: String,
+  },
+  driver_country: {
     type: String,
   },
   driver_phone: {

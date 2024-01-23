@@ -11,7 +11,7 @@ const getVehicleList = async (req, res) => {
   try {
     const vehicles = await General.find(
       {},
-      "manufacturer model license_plate status general_info"
+      "manufacturer model license_plate status active general_info"
     )
       .populate({
         path: "general_info",
@@ -51,6 +51,7 @@ const getVehicleList = async (req, res) => {
         license_plate: generalInfo.license_plate,
         vehicle_id: vehicle.model._id,
         status: vehicle.status,
+        active: vehicle.active,
         damage_maintenance: damageMintance[0] || null,
       };
     });

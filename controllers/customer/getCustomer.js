@@ -1,4 +1,4 @@
-const { Customer } = require("../../models/customer");
+const { Customer, Driver } = require("../../models/customer");
 
 const getCustomer = async (req, res) => {
   try {
@@ -25,31 +25,41 @@ const getCustomer = async (req, res) => {
 const getCustomerById = async (req, res) => {
   const { id } = req.params;
   try {
+    // Find the customer by _id
     const customer = await Customer.findById(id)
       .populate("comp_id", "name")
       .populate("sub_id", "subscription_name");
 
-    if (customer !== null) {
-      return res.status(200).json({
-        status: true,
-        error: false,
-        msg: "customer information gets successfully",
-        data: customer,
-      });
-    } else {
+    if (!customer) {
       return res.status(404).json({
         status: false,
         error: true,
-        msg: "customer is not found",
+        msg: "Customer not found",
       });
     }
+
+    // Find the corresponding driver using the cust_id
+    const driver = await Driver.findOne({ cust_id: id });
+
+    // Combine the data from customer and driver
+    const combinedData = {
+      customer,
+      driver,
+    };
+
+    return res.status(200).json({
+      status: true,
+      error: false,
+      msg: "Customer and Driver details retrieved successfully",
+      data: combinedData,
+    });
   } catch (err) {
+    console.error(err);
     res.status(500).json({
       status: false,
       error: true,
-      msg: "Internal Server error",
+      msg: "Internal Server Error",
     });
   }
 };
-
 module.exports = { getCustomer, getCustomerById };
