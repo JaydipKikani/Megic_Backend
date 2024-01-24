@@ -11,17 +11,15 @@ const getVehicleList = async (req, res) => {
   try {
     const vehicles = await General.find(
       {},
-      "manufacturer model license_plate status active general_info"
+      "manufacturer model license_plate vehicle_location status active general_info"
     )
       .populate({
         path: "general_info",
-        select: "license_plate damage_maintenance",
+        select: "license_plate damage_maintenance",             
       })
       .populate("manufacturer", "name")
       .populate("model", "_id name")
       .exec();
-
-    // console.log("Populated Vehicles:", vehicles);
 
     const finddamageInfo = await DamageMaintenance.find();
     const formattedVehicles = vehicles.map((vehicle) => {
@@ -36,19 +34,14 @@ const getVehicleList = async (req, res) => {
           next_mileage: item.next_mileage,
           next_date: item.next_date,
         }));
-      // console.log("damageMintance",damageMintance)
-      // const damageMaintenance = generalInfo.damage_maintenance || {
-      //     next_mileage: null,
-      //     next_date: null,
-      // };
 
-      //   console.log("generalInfo", generalInfo);
       return {
-        _id:vehicle._id,
-        general_id: generalInfo._id, // Assuming _id is the general_id field
+        _id: vehicle._id,
+        general_id: generalInfo._id,
         manufacturer: vehicle.manufacturer.name,
         model: vehicle.model.name,
         license_plate: generalInfo.license_plate,
+        vehicle_location: vehicle.vehicle_location,
         vehicle_id: vehicle.model._id,
         status: vehicle.status,
         active: vehicle.active,

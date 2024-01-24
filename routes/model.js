@@ -6,7 +6,7 @@ const router = Router();
 
 router.post("/add", addModel);
 
-router.get("/", listModel);
+router.get("/:id", listModel);
 
 module.exports = {
     modelRouter: router,

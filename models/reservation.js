@@ -14,15 +14,14 @@ const reservationSchema = new mongoose.Schema({
   customer_id: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Customer",
-    required: true,
   },
   status: {
     type: String,
-    required: true,
+       required: true,
   },
   extra_km: {
     type: Number,
-    default: 0,
+    default:   0,
   },
   start_date: {
     type: Date,
@@ -41,8 +40,7 @@ const reservationSchema = new mongoose.Schema({
     required: true,
   },
   cust_loc: {
-    type: String,
-    required: true,
+    type: String
   },
 });
 

@@ -4,7 +4,10 @@ const { VehicleCategory } = require("../../models/vehicle");
 const getVehicleCategories = async (req, res) => {
   try {
     const vehicleCategories = await VehicleCategory.find();
-    
+
+    // Sort the array in ascending order based on the "name" field
+    vehicleCategories.sort((a, b) => a.name.localeCompare(b.name));
+
     return res.status(200).json({
       status: true,
       error: false,
@@ -20,7 +23,7 @@ const getVehicleCategories = async (req, res) => {
     });
   }
 };
-
+                      
 module.exports = {
   getVehicleCategories,
 };

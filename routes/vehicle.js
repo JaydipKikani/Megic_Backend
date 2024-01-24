@@ -18,7 +18,7 @@ const router = Router();
 router.post("/add", createVehicle);
 router.patch("/:id", updateVehicle);
 router.get("/:id", getbyIdVehicle);
-router.get("/vehiclelist/dropdown", getVehicleModalList);
+router.get("/vehiclelist/dropdown/:id", getVehicleModalList);
 router.get("/", getVehicleList);
 router.get("/category/categorylist", getVehicleCategories);
 router.get("/finance/financetype", getVehicleFinanceType);

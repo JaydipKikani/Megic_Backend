@@ -22,8 +22,8 @@ const Invoice = mongoose.model('Invoice', invoiceSchema);
 // Define schema for the ProductDetail
 const productDetailSchema = new mongoose.Schema({
     bill_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Invoice', required: true },
-    item_name: { type: String, required: true },
-    item_desc: { type: String },
+    item_name: { type: String, },
+    item_desc: { type: String, required: true },
     price: { type: Number, required: true },
     length: { type: Number },
     qty: { type: Number, required: true },

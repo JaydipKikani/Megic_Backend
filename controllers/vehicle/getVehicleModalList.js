@@ -2,7 +2,8 @@ const { Model, General } = require("../../models/vehicle");
 
 const getVehicleModalList = async (req, res) => {
   try {
-    const vehicles = await General.find()
+    const companyId = req.params.id;
+    const vehicles = await General.find({ company: companyId }) // Filter based on companyId
       .populate({
         path: "general_info",
         select: "license_plate damage_maintenance",
@@ -20,6 +21,7 @@ const getVehicleModalList = async (req, res) => {
         name: `${vehicle.manufacturer.name} ${vehicle.model.name}: ${vehicle.general_info.license_plate}`,
         _id: vehicle._id,
       }));
+
     return res.json({
       status: true,
       error: false,

@@ -81,7 +81,7 @@ const createCustomer = async (req, res) => {
       errors = requireFieldErrorMessege(err);
       return res.status(422).json({
         status: false,
-        error: true,
+        error: true,  
         msg: errors,
       });
     } else {

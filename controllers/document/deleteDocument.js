@@ -21,7 +21,7 @@ const deleteDocument = async (req, res) => {
     fileUrls.forEach(async (fileUrl) => {
       const filePath = path.join(__dirname, "../../", fileUrl);
       await fs.unlink(filePath);
-    });
+    })  ;
 
     // Remove the document from the database
     await Document.findByIdAndDelete(id);

@@ -39,7 +39,7 @@ const companyData = async (req, res) => {
     });
   } catch (err) {
     res.status(404).json({
-      status: false,
+      status: false,      
       error: true,
       msg: "company is not found",
     });
@@ -49,3 +49,4 @@ const companyData = async (req, res) => {
 module.exports = {
   companyData,
 };
+              

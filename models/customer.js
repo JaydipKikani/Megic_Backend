@@ -34,7 +34,7 @@ const customerSchema = mongoose.Schema(
       type: String,
     },
     postal_code: {
-      type: Number,
+      type: Number,   
     },
     address: {
       type: String,
