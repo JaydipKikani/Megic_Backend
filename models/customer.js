@@ -6,10 +6,11 @@ const customerSchema = mongoose.Schema(
       type: String,
       required: true,
     },
+    c_id: { type: Number },
     lastname: {
       type: String,
       required: true,
-   },
+    },
     email: {
       type: String,
       required: true,
@@ -34,7 +35,7 @@ const customerSchema = mongoose.Schema(
       type: String,
     },
     postal_code: {
-      type: Number,   
+      type: Number,
     },
     address: {
       type: String,
@@ -54,6 +55,28 @@ const customerSchema = mongoose.Schema(
     timestamps: true,
   }
 );
+
+customerSchema.pre("save", async function (next) {
+  // Only update c_id if the document is new
+  if (this.isNew) {
+    try {
+      // Find the maximum c_id value in the collection
+      const maxCId = await this.constructor
+        .findOne({}, { c_id: 1 })
+        .sort({ c_id: -1 });
+
+      // Increment the c_id by 1
+      const newCId = maxCId ? parseInt(maxCId.c_id) + 1 : 1;
+
+      // Update the c_id field
+      this.c_id = newCId.toString();
+    } catch (error) {
+      return next(error);
+    }
+  }
+
+  next();
+});
 
 const driverSchema = mongoose.Schema({
   driver_first: {

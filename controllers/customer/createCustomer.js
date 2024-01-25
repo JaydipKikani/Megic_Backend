@@ -9,7 +9,17 @@ const {
 const createCustomer = async (req, res) => {
   const customer = req.body;
   const file = req.file;
-  const { driver_first, driver_last, driver_postcode, driver_address,driver_city,driver_country,driver_phone,driver_email,driver_dob  } = customer;
+  const {
+    driver_first,
+    driver_last,
+    driver_postcode,
+    driver_address,
+    driver_city,
+    driver_country,
+    driver_phone,
+    driver_email,
+    driver_dob,
+  } = customer;
   try {
     const newCustomer = await Customer.create({ ...customer });
     const newDriver = await Driver.create({
@@ -81,7 +91,7 @@ const createCustomer = async (req, res) => {
       errors = requireFieldErrorMessege(err);
       return res.status(422).json({
         status: false,
-        error: true,  
+        error: true,
         msg: errors,
       });
     } else {

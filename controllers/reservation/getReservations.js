@@ -1,10 +1,5 @@
-const express = require("express");
 const Reservation = require("../../models/reservation");
-const Company = require("../../models/company");
 
-const Customer = require("../../models/customer");
-
-const router = express.Router();
 
 const getReservations = async (req, res) => {
   try {

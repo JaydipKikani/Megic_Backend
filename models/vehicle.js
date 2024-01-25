@@ -152,7 +152,7 @@ const generalSchema = new mongoose.Schema({
   license_class: String,
 });
 
-const General = mongoose.model("General", generalSchema);
+const  General = mongoose.model("General", generalSchema);
 
 // Define schema for damage_maintenance
 const damageMaintenanceSchema = new mongoose.Schema({
