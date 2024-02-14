@@ -1,5 +1,4 @@
 const { Document } = require("../../models/vehicle");
-
 const { requireFieldErrorMessege } = require("../../services/validation");
 
 const addDocument = async (req, res) => {
@@ -14,25 +13,35 @@ const addDocument = async (req, res) => {
       });
     }
 
-    const fileUrls = files.map((file) => `/assets/document/${file.filename}`);
     const generalInfoId = req.body.general_info;
 
-    const document = new Document({
-      general_info: generalInfoId,
-      document: fileUrls,
-    });
-    const savedDocument = await document.save();
+    const documents = [];
+    
+    for (const file of files) {
+      const fileUrl = `/assets/document/${file.filename}`;
 
-    // Fetch the saved document with limited fields
-    const responseDocument = await Document.findById(savedDocument._id).select(
-      "general_info document _id"
-    );
+      const document = new Document({
+        general_info: generalInfoId,
+        document: [fileUrl],
+      });
 
-    return res.status(422).json({
-      status: false,
-      error: true,
+      const savedDocument = await document.save();
+
+      // Fetch the saved document with limited fields
+      const responseDocument = {
+        _id: savedDocument._id,
+        general_info: savedDocument.general_info,
+        document: savedDocument.document,
+      };
+
+      documents.push(responseDocument);
+    }
+
+    return res.status(200).json({
+      status: true,
+      error: false,
       msg: "Files uploaded successfully",
-      data: responseDocument,
+      data: documents,
     });
   } catch (err) {
     let errors;

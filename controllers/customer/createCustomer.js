@@ -21,7 +21,7 @@ const createCustomer = async (req, res) => {
     driver_dob,
   } = customer;
   try {
-    const newCustomer = await Customer.create({ ...customer });
+   
     const newDriver = await Driver.create({
       driver_first,
       driver_last,
@@ -32,8 +32,15 @@ const createCustomer = async (req, res) => {
       driver_email,
       driver_phone,
       driver_dob,
-      cust_id: newCustomer._id,
     });
+
+    // Create a new customer with a reference to the driver
+    const newCustomer = await Customer.create({
+      ...customer,
+      driver_id: newDriver._id, 
+    });
+
+
     if (newCustomer !== null) {
       if (req.file) {
         const imgPath = `/assets/licence/${newCustomer._id}${file.filename}`;

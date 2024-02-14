@@ -24,11 +24,13 @@ const getCustomer = async (req, res) => {
 
 const getCustomerById = async (req, res) => {
   const { id } = req.params;
+
   try {
     // Find the customer by _id
     const customer = await Customer.findById(id)
       .populate("comp_id", "name")
-      .populate("sub_id", "subscription_name");
+      .populate("sub_id", "subscription_name")
+      .populate("driver_id"); // Populate the driver_id field
 
     if (!customer) {
       return res.status(404).json({
@@ -38,8 +40,8 @@ const getCustomerById = async (req, res) => {
       });
     }
 
-    // Find the corresponding driver using the cust_id
-    const driver = await Driver.findOne({ cust_id: id });
+    // Retrieve the driver using the driver_id field
+    const driver = await Driver.findById(customer.driver_id);
 
     // Combine the data from customer and driver
     const combinedData = {
@@ -62,4 +64,5 @@ const getCustomerById = async (req, res) => {
     });
   }
 };
+
 module.exports = { getCustomer, getCustomerById };

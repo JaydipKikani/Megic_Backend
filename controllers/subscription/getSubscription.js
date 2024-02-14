@@ -14,7 +14,7 @@ const getSubscription = async (req, res) => {
       subscription: subsciption,
       miscSetting: miscSetting,
     };
-
+    
     res.status(200).json({
       status: true,
       error: false,

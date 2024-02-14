@@ -46,9 +46,19 @@ const customerSchema = mongoose.Schema(
     country: {
       type: String,
     },
+    vat_number: {
+      type: String,
+    },
+    business: {
+      type: String,
+    },
     sub_id: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Subscriptions",
+    },
+    driver_id: {  // Add this field
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Driver",
     },
   },
   {
@@ -103,11 +113,17 @@ const driverSchema = mongoose.Schema({
   driver_email: {
     type: String,
   },
-  driver_dob: Date,
-  cust_id: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Customer",
+  id_card: {
+    type: String,
   },
+  license: {
+    type: String,
+  },
+  driver_dob: Date,
+  // cust_id: {
+  //   type: mongoose.Schema.Types.ObjectId,
+  //   ref: "Customer",
+  // },
 });
 
 const Customer = mongoose.model("Customer", customerSchema, "Customer");

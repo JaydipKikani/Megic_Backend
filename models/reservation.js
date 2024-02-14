@@ -17,11 +17,11 @@ const reservationSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-       required: true,
+    required: true,
   },
   extra_km: {
     type: Number,
-    default:   0,
+    default: 0,
   },
   start_date: {
     type: Date,

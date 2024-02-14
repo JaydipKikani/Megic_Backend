@@ -20,7 +20,12 @@ const updateVehicle = async (req, res) => {
         // Update data in GeneralInfo
         const updatedGeneralInfo = await GeneralInfo.findByIdAndUpdate(
             generalInfoId,
-            { $set: req.body.generalInfo },
+            {
+                $set: {
+                    ...req.body.generalInfo,
+                    tags: req.body.generalInfo.tags.map(tag => ({ name: tag.name, value: tag.value || null })),
+                },
+            },
             { new: true }
         );
 

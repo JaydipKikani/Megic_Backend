@@ -11,7 +11,7 @@ const updateSubscription = async (req, res) => {
 
       const nonNestedFields = ["comp_id", "subscription_name", "cpr"];
       nonNestedFields.forEach((field) => {
-        if (data[field]) {
+          if (data[field]) {
           updateFields[field] = data[field];
         }
       });

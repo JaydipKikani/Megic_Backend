@@ -20,8 +20,8 @@ const getVehicleModalList = async (req, res) => {
       .map((vehicle) => ({
         name: `${vehicle.manufacturer.name} ${vehicle.model.name}: ${vehicle.general_info.license_plate}`,
         _id: vehicle._id,
+        general_info: vehicle.general_info._id,
       }));
-
     return res.json({
       status: true,
       error: false,

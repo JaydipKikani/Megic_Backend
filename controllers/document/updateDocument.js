@@ -5,49 +5,63 @@ const { Document } = require("../../models/vehicle");
 const updateDocument = async (req, res) => {
   try {
     const id = req.params.id;
-    const document = await Document.findById(id);
+    // Find documents with the specified general_info ID
+    const documents = await Document.find({ general_info: id });
 
-    if (!document) {
+    if (!documents || documents.length === 0) {
       return res.status(404).json({
         status: false,
         error: true,
-        msg: "Document not found.",
+        msg: "No documents found for the given general_info ID.",
       });
     }
 
-    // Remove files from the folder
-    if (document.document && document.document.length > 0) {
-      for (const fileUrl of document.document) {
-        const filePath = path.join(
-          __dirname,
-          "../../assets/document",
-          path.basename(fileUrl)
-        );
-        await fs.unlink(filePath);
+    // Remove files from the folder for each existing document
+    for (const doc of documents) {
+      if (doc.document && doc.document.length > 0) {
+        for (const fileUrl of doc.document) {
+          const filePath = path.join(
+            __dirname,
+            "../../assets/document",
+            path.basename(fileUrl)
+          );
+          await fs.unlink(filePath);
+        }
       }
-    }
 
-    // Remove the existing Document document
-    await Document.findByIdAndDelete(id);
+      // Remove the existing Document document
+      await Document.findByIdAndDelete(doc._id);
+    }
 
     // Upload the new documents
     const files = req.files;
     if (files && files.length > 0) {
-      const newFileUrls = files.map(
-        (file) => `/assets/document/${file.filename}`
-      );
+      const newDocuments = [];
 
-      // Save the new documents
-      const newDocument = await Document.create({
-        general_info: document.general_info,
-        document: newFileUrls,
-      });
+      for (const file of files) {
+        const newFileUrl = `/assets/document/${file.filename}`;
+
+        // Save the new document
+        const newDocument = await Document.create({
+          general_info: id,
+          document: [newFileUrl],
+        });
+
+        // Fetch the saved document with limited fields
+        const responseDocument = {
+          _id: newDocument._id,
+          general_info: newDocument.general_info,
+          document: newDocument.document,
+        };
+
+        newDocuments.push(responseDocument);
+      }
 
       return res.json({
         status: true,
         error: false,
-        msg: "Document updated successfully",
-        data: newDocument,
+        msg: "Document(s) updated successfully",
+        data: newDocuments,
       });
     } else {
       return res.json({

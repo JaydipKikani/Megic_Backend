@@ -15,7 +15,7 @@ const getVehicleList = async (req, res) => {
     )
       .populate({
         path: "general_info",
-        select: "license_plate damage_maintenance",             
+        select: "license_plate damage_maintenance",
       })
       .populate("manufacturer", "name")
       .populate("model", "_id name")
@@ -36,15 +36,15 @@ const getVehicleList = async (req, res) => {
         }));
 
       return {
-        _id: vehicle._id,
-        general_id: generalInfo._id,
-        manufacturer: vehicle.manufacturer.name,
-        model: vehicle.model.name,
-        license_plate: generalInfo.license_plate,
-        vehicle_location: vehicle.vehicle_location,
-        vehicle_id: vehicle.model._id,
-        status: vehicle.status,
-        active: vehicle.active,
+        _id: vehicle?._id,
+        general_id: generalInfo?._id,
+        manufacturer: vehicle?.manufacturer?.name,
+        model: vehicle?.model?.name,
+        license_plate: generalInfo?.license_plate,
+        vehicle_location: vehicle?.vehicle_location,
+        vehicle_id: vehicle?.model?._id,
+        status: vehicle?.status,
+        active: vehicle?.active,
         damage_maintenance: damageMintance[0] || null,
       };
     });

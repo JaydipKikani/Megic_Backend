@@ -6,59 +6,49 @@ const {
 const fs = require("fs");
 
 const updateCustomer = async (req, res) => {
-  const id = req.params.id;
+  const customerId = req.params.id;
   const customerData = req.body;
-  const {
-    driver_first,
-    driver_last,
-    driver_postcode,
-    driver_address,
-    driver_city,
-    driver_country,
-    driver_phone,
-    driver_email,
-    driver_dob,
-  } = customerData;
   const file = req.file;
 
   try {
-    const findCustomer = await Customer.findById(id);
+    const updatedCustomer = await Customer.findByIdAndUpdate(
+      customerId,
+      customerData,
+      { new: true }
+    );
 
-    if (findCustomer !== null) {
-      // Update the customer
-      const updatedCustomer = await Customer.findByIdAndUpdate(id, customerData, {
-        new: true,
-      });
-
-      // Find the corresponding driver using the cust_id
-      let updateDriver = await Driver.findOne({ cust_id: id });
+    if (updatedCustomer) {
+      // Find the corresponding driver using the driver_id
+      let updateDriver = await Driver.findById(updatedCustomer.driver_id);
 
       if (updateDriver) {
         // If driver exists, update its fields
-        updateDriver.driver_first = driver_first;
-        updateDriver.driver_last = driver_last;
-        updateDriver.driver_postcode = driver_postcode;
-        updateDriver.driver_address = driver_address;
-        updateDriver.driver_city = driver_city;
-        updateDriver.driver_country = driver_country;
-        updateDriver.driver_phone = driver_phone;
-        updateDriver.driver_email = driver_email;
-        updateDriver.driver_dob = driver_dob;
+        updateDriver = Object.assign(updateDriver, {
+          driver_first: customerData.driver_first,
+          driver_last: customerData.driver_last,
+          driver_postcode: customerData.driver_postcode,
+          driver_address: customerData.driver_address,
+          driver_city: customerData.driver_city,
+          driver_country: customerData.driver_country,
+          driver_phone: customerData.driver_phone,
+          driver_email: customerData.driver_email,
+          driver_dob: customerData.driver_dob,
+        });
 
         updateDriver = await updateDriver.save();
       } else {
         // If driver does not exist, create a new one
         updateDriver = await Driver.create({
-          cust_id: id,
-          driver_first,
-          driver_last,
-          driver_postcode,
-          driver_address,
-          driver_city,
-          driver_country,
-          driver_phone,
-          driver_email,
-          driver_dob,
+          _id: updatedCustomer.driver_id,
+          driver_first: customerData.driver_first,
+          driver_last: customerData.driver_last,
+          driver_postcode: customerData.driver_postcode,
+          driver_address: customerData.driver_address,
+          driver_city: customerData.driver_city,
+          driver_country: customerData.driver_country,
+          driver_phone: customerData.driver_phone,
+          driver_email: customerData.driver_email,
+          driver_dob: customerData.driver_dob,
         });
       }
 
@@ -128,4 +118,3 @@ const updateCustomer = async (req, res) => {
 module.exports = {
   updateCustomer,
 };
-    

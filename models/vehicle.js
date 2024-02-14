@@ -67,7 +67,15 @@ const generalInfoSchema = new mongoose.Schema({
   transmission: String,
   seat_name: String,
   no_doors: Number,
-  tags: [String],
+  tags: [
+    {
+      name: String,
+      value: {
+        type: String,
+        enum: ["before", "after", "both", "null"],
+      },
+    },
+  ],
 });
 
 const GeneralInfo = mongoose.model("GeneralInfo", generalInfoSchema);
@@ -152,7 +160,7 @@ const generalSchema = new mongoose.Schema({
   license_class: String,
 });
 
-const  General = mongoose.model("General", generalSchema);
+const General = mongoose.model("General", generalSchema);
 
 // Define schema for damage_maintenance
 const damageMaintenanceSchema = new mongoose.Schema({
