@@ -8,7 +8,7 @@ const getDeliveryInList = async (req, res) => {
         const oneDayBefore = new Date(currentDate);
         oneDayBefore.setDate(currentDate.getDate() - 1);
         const twoDaysAfter = new Date(currentDate);
-        twoDaysAfter.setDate(currentDate.getDate() + 1);
+        twoDaysAfter.setDate(currentDate.getDate() + 7);
 
         const reservations = await Reservation.find({
             $or: [
@@ -38,7 +38,7 @@ const getDeliveryInList = async (req, res) => {
             reservation_id: { $in: reservationIds },
             status: 2,
         });
-
+        console.log("reservations", reservations);
         const filteredReservations = reservations
             .filter((reservation) =>
                 checkData.some((check) => check.reservation_id.equals(reservation._id))

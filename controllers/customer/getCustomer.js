@@ -3,6 +3,7 @@ const { Customer, Driver } = require("../../models/customer");
 const getCustomer = async (req, res) => {
   try {
     const customers = await Customer.find()
+      .populate("driver_id", "driver_first driver_last")
       .populate("comp_id", "name")
       .populate("sub_id", "subscription_name");
 

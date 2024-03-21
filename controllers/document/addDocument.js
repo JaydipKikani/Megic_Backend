@@ -16,7 +16,7 @@ const addDocument = async (req, res) => {
     const generalInfoId = req.body.general_info;
 
     const documents = [];
-    
+
     for (const file of files) {
       const fileUrl = `/assets/document/${file.filename}`;
 

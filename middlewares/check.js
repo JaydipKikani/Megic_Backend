@@ -3,21 +3,20 @@ const path = require("path");
 const fs = require("fs");
 
 const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        console.log('Received field:', file.fieldname);
-        const folder = file.fieldname === 'exterior_damage' ? 'exterior_damage' : 'interior_damage';
-        const uploadPath = path.join('./', 'assets', 'checkdata', folder);   
+  destination: function (req, file, cb) {
+    const folder = file.fieldname === 'exterior_damage' ? 'exterior_damage' : 'interior_damage';
+    const uploadPath = path.join('./', 'assets', 'checkdata', folder);
 
-        // Check if the folder exists, create it if not
-        if (!fs.existsSync(uploadPath)) {
-            fs.mkdirSync(uploadPath, { recursive: true });
-        }
-
-        cb(null, uploadPath);
-    },
-    filename: function (req, file, cb) {
-        cb(null, Date.now() + '-' + file.originalname);
+    // Check if the folder exists, create it if not
+    if (!fs.existsSync(uploadPath)) {
+      fs.mkdirSync(uploadPath, { recursive: true });
     }
+
+    cb(null, uploadPath);
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + '-' + file.originalname);
+  }
 });
 
 

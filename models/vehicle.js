@@ -57,7 +57,7 @@ const generalInfoSchema = new mongoose.Schema({
   second_fuel: { type: mongoose.Schema.Types.ObjectId, ref: "FuelType" },
   chassis_number: { type: String, required: true },
   license_plate: String,
-  co2_emissions: { type: Number, required: true },
+  co2_emissions: { type: String, required: true },
   k_w: Number,
   resume: String,
   displacement: Number,
@@ -67,6 +67,7 @@ const generalInfoSchema = new mongoose.Schema({
   transmission: String,
   seat_name: String,
   no_doors: Number,
+  vi_types: String,
   tags: [
     {
       name: String,
@@ -153,10 +154,13 @@ const generalSchema = new mongoose.Schema({
   },
   vehicle_location: String,
   year: Number,
-  color: String,
+  color: {
+    name: String,
+    image: String,
+  },
   status: String,
   active: String,
-  min_age_driver: { type: Number, required: true },
+  min_age_driver: { type: Number, required: true, default: 23 },
   license_class: String,
 });
 
@@ -194,7 +198,21 @@ const damageSchema = new mongoose.Schema({
 
 const Damage = mongoose.model("Damage", damageSchema);
 
+// Vehicle Overview Schema
+const overviewSchema = new mongoose.Schema({
+  general_info: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "GeneralInfo",
+    required: true,
+  },
+  vehicle_rented: String,
+  ave_non_time: String,
+  current_delta: String,
+});
+const OverviewInfo = mongoose.model("OverviewInfo", overviewSchema);
+
 // Define schema for document
+
 const documentSchema = new mongoose.Schema({
   general_info: {
     type: mongoose.Schema.Types.ObjectId,
@@ -220,4 +238,5 @@ module.exports = {
   DamageMaintenance,
   Damage,
   Document,
+  OverviewInfo
 };

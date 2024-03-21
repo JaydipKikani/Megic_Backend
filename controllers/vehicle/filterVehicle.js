@@ -19,7 +19,6 @@ const filterVehicle = async (req, res) => {
     if (status) {
       query["status"] = status;
     }
-    console.log("Search Query:", JSON.stringify(query));
     // Populate the manufacturer and model fields
     const vehicles = await General.find(query)
       .populate({

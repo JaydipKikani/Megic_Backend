@@ -30,7 +30,7 @@ const getUserById = async (req, res) => {
                 zipcode: user.zipcode,
                 country: user.country,
                 language: user.language,
-                profilePhoto: user.profilePhoto,
+                profilePhoto: user.profilePhoto
             }
         });
     } catch (error) {

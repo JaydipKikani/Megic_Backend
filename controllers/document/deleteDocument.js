@@ -16,12 +16,16 @@ const deleteDocument = async (req, res) => {
       });
     }
 
-    // Remove the file from the folder
-    const fileUrls = document.document;
-    fileUrls.forEach(async (fileUrl) => {
-      const filePath = path.join(__dirname, "../../", fileUrl);
-      await fs.unlink(filePath);
-    })  ;
+    // Get the document folder path (assuming it's stored in a specific directory)
+    const documentFolderPath = path.join(__dirname, "../../", "assets/document", id);
+
+    // Check if the document folder exists
+    const folderExists = await fs.stat(documentFolderPath).catch(() => false);
+
+    if (folderExists) {
+      // If the folder exists, delete it recursively
+      await fs.rmdir(documentFolderPath, { recursive: true });
+    }
 
     // Remove the document from the database
     await Document.findByIdAndDelete(id);

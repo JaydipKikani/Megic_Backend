@@ -26,27 +26,36 @@ const updateCompany = async (req, res) => {
     const getCompany = await CompanyInfo.findById(id);
 
     if (getCompany !== null) {
+      // Update the CompanyInfo model, including the vatno, regno, and vate_rate fields
       company = await CompanyInfo.findOneAndUpdate(
         { _id: id },
-        compnayDetails,
         {
-          new: true,
-        }
+          ...compnayDetails,
+          vatno: compnayDetails.vatno,
+          regno: compnayDetails.regno,
+          vate_rate: compnayDetails.vate_rate,
+        },
+        { new: true }
       );
+
       if (billingInfo) {
+        // Update the compid field for BillingInformation
         billing = await BillingInformation.findOneAndUpdate(
           { compid: id },
           billingInfo,
           { new: true }
         );
       }
+
       if (bankingInfo) {
+        // Update the compid field for BankingInformation
         banking = await BankingInformation.findOneAndUpdate(
           { compid: id },
           bankingInfo,
           { new: true }
         );
       }
+
       res.status(200).json({
         status: true,
         error: false,

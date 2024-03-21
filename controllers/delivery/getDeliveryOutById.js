@@ -29,7 +29,6 @@ const getDeliveryOutById = async (req, res) => {
                     { path: "comp_id", model: "Company", select: "name" },
                 ],
             });
-
         if (!reservationData) {
             return res.status(404).json({
                 status: false,
@@ -47,27 +46,29 @@ const getDeliveryOutById = async (req, res) => {
                 fuel_gauge: `${deliveryData.fuel_gauge_numerator}/${deliveryData.fuel_gauge_denominator}`,
             }
             : null;
-        const customerData = await Customer.populate(reservationData.customer_id, {
-            path: "driver_id sub_id",
-        });
+        // const customerData = await Customer.populate(reservationData.customer_id, {
+        //     path: "driver_id sub_id",
+        // });
 
-        if (!customerData) {
-            return res.status(400).json({
-                status: false,
-                error: true,
-                msg: "Customer information not found for this reservation",
-                data: null,
-            });
-        }
+        // if (!customerData) {
+        //     return res.status(400).json({
+        //         status: false,
+        //         error: true,
+        //         msg: "Customer information not found for this reservation",
+        //         data: null,
+        //     });
+        // }
+        const customerData = reservationData.customer_id ? await Customer.populate(reservationData.customer_id, { path: "driver_id sub_id" }) : {};
         const driverData = customerData.driver_id || {};
         const subscriptionData = customerData.sub_id || {};
         const companyData = customerData.comp_id || {};
 
-       
+
         // Get subscription data based on vehicle_category name
+        const isMaintenanceOrRepair = reservationData.status === "Maintenance" || reservationData.status === "Repair";
+        console.log("isMaintenanceOrRepair =>", isMaintenanceOrRepair);
         const vehicleCategoryName = `category${reservationData.general_id.vehicle_category.name}`;
-        console.log('subscriptionData', vehicleCategoryName)
-        const subscriptionInfoForCategory = {
+        const subscriptionInfoForCategory = isMaintenanceOrRepair ? null : {
             subscription_name: subscriptionData.subscription_name,
             base_cost: subscriptionData.base_cost[vehicleCategoryName],
             bail: subscriptionData.bail[vehicleCategoryName],
@@ -78,9 +79,44 @@ const getDeliveryOutById = async (req, res) => {
             inte_cleaning: subscriptionData.inte_cleaning[vehicleCategoryName],
             vehicle_immobilization_cost: subscriptionData.vehicle_immobilization_cost[vehicleCategoryName],
         };
-        console.log('subscriptionInfoForCategory', subscriptionInfoForCategory)
+
+
+
+        const customerInfo = isMaintenanceOrRepair ? null : {
+            _id: customerData._id,
+            firstname: customerData.firstname,
+            lastname: customerData.lastname,
+            address: customerData.address,
+            city: customerData.city,
+            country: customerData.country,
+            cust_type: customerData.cust_type,
+            company_name: companyData.name,
+        };
+
+        const driverInfo = isMaintenanceOrRepair ? null : {
+            _id: driverData._id,
+            driver_first: driverData.driver_first,
+            driver_last: driverData.driver_last,
+            driver_address: driverData.driver_address,
+            driver_city: driverData.driver_city,
+            driver_country: driverData.driver_country,
+            driver_email: driverData.driver_email,
+            driver_phone: driverData.driver_phone,
+            id_card: driverData.id_card,
+            license: driverData.license,
+        };
+
         // Populate miscSetting data
         const miscSettingData = await MiscSetting.findOne({ sub_id: subscriptionData._id });
+
+        const miscSettingInfo = isMaintenanceOrRepair ? null : {
+            admin_cost: miscSettingData.admin_cost,
+            add_cost: miscSettingData.add_cost,
+            svarnish: miscSettingData.svarnish,
+            lvarnish: miscSettingData.lvarnish,
+            redowheel: miscSettingData.redowheel,
+        };
+
         res.status(200).json({
             status: true,
             error: false,
@@ -110,36 +146,10 @@ const getDeliveryOutById = async (req, res) => {
                     },
                 },
                 delivery_info: deliveryInfo,
-                customer_info: {
-                    _id: customerData._id,
-                    firstname: customerData.firstname,
-                    lastname: customerData.lastname,
-                    address: customerData.address,
-                    city: customerData.city,
-                    country: customerData.country,
-                    cust_type: customerData.cust_type,
-                    company_name: companyData.name,
-                },
-                driver_info: {
-                    _id: driverData._id,
-                    driver_first: driverData.driver_first,
-                    driver_last: driverData.driver_last,
-                    driver_address: driverData.driver_address,
-                    driver_city: driverData.driver_city,
-                    driver_country: driverData.driver_country,
-                    driver_email: driverData.driver_email,
-                    driver_phone: driverData.driver_phone,
-                    id_card: driverData.id_card,
-                    license: driverData.license,
-                },
+                customer_info: customerInfo,
+                driver_info: driverInfo,
                 subscription_info: subscriptionInfoForCategory,
-                miscSetting: {
-                    admin_cost: miscSettingData.admin_cost,
-                    add_cost: miscSettingData.add_cost,
-                    svarnish: miscSettingData.svarnish,
-                    lvarnish: miscSettingData.lvarnish,
-                    redowheel: miscSettingData.redowheel,
-                },
+                miscSetting: miscSettingInfo,
             },
         });
     } catch (error) {

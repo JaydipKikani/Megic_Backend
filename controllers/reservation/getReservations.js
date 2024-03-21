@@ -20,11 +20,20 @@ const getReservations = async (req, res) => {
             path: "manufacturer",
             select: "name", // Include the fields you want from the Manufacturer model
           },
+          {
+            path: "general_info",
+            model: "GeneralInfo",
+            select: "license_plate damage_maintenance",
+          },
         ],
       })
       .populate({
         path: "customer_id",
         select: "firstname lastname",
+        populate: {
+          path: "driver_id",
+          select: "driver_first driver_last",
+        },
       });
 
     return res.status(200).json({

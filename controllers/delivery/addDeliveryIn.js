@@ -2,9 +2,10 @@ const express = require("express");
 const router = express.Router();
 const deliveryin = require("../../middlewares/deliveryin");
 const { DeliveryIn } = require("../../models/delivery");
+const CheckData = require("../../models/checkdata");
 
 const addDeliveryIn = async (req, res) => {
-    const { km_counter, fuel_gauge, r_id } = req.body;
+    const { km_counter, fuel_gauge, r_id, status } = req.body;
     try {
         const [numerator, denominator] = fuel_gauge.split('/').map(Number);
 
@@ -38,6 +39,7 @@ const addDeliveryIn = async (req, res) => {
             }
 
             await existingDelivery.save();
+            await CheckData.findOneAndUpdate({ reservation_id: r_id }, { $set: { status } });
 
             res.status(200).json({
                 status: true,
@@ -51,12 +53,12 @@ const addDeliveryIn = async (req, res) => {
             // Handle photo uploads
             if (req.files) {
                 const photoUrls = req.files.map(file => `/assets/photos/${file.filename}`);
-                console.log('Generated Photo URLs:', photoUrls);
                 newDelivery.photos = photoUrls;
             }
 
 
             await newDelivery.save();
+            await CheckData.findOneAndUpdate({ reservation_id: r_id }, { $set: { status } }, { upsert: true });
 
             res.status(200).json({
                 status: true,

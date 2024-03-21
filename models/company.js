@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+
 // Company API
 const compnayDetailsSchema = mongoose.Schema({
   name: {
@@ -17,6 +18,9 @@ const compnayDetailsSchema = mongoose.Schema({
   website: {
     type: String,
   },
+  vatno: String,    // Move vatno to Company schema
+  regno: String,    // Move regno to Company schema
+  vate_rate: String, // Move vate_rate to Company schema
 });
 
 const billingInformationSchema = mongoose.Schema({
@@ -38,11 +42,8 @@ const billingInformationSchema = mongoose.Schema({
 
 const bankigInformationSchema = mongoose.Schema({
   bankname: String,
-  vatno: String,
   iban: String,
   bic: String,
-  regno: String,
-  vate_rate: String,
   currency: String,
   symbol: String,
   compid: {

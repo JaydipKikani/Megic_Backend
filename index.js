@@ -21,7 +21,10 @@ const { invoiceRouter } = require("./routes/invoice");
 const { mailRouter } = require("./routes/email");
 const { checkRouter } = require("./routes/check");
 const { deliveryRouter } = require("./routes/delivery");
-
+const { paymentRouter } = require("./routes/payment");
+const { custRoute } = require("./routes/front/customer");
+const { vehiRoute } = require("./routes/front/vehicle");
+const { generalRoute } = require("./routes/generalimages");
 
 dotenv.config({
   path: "./.env",
@@ -69,6 +72,9 @@ app.use("/api/v1/vehicle", authntication, vehicleRouter);
 app.use("/api/v1/document", authntication, documentRoute);
 
 // Document routes
+app.use("/api/v1/general", authntication, generalRoute);
+
+// Document routes
 app.use("/api/v1/reservation", authntication, reservationRouter);
 
 // fuel routes
@@ -83,6 +89,12 @@ app.use("/api/v1/check", authntication, checkRouter);
 // Delivery routes
 app.use("/api/v1/delivery", authntication, deliveryRouter);
 
+// fuel routes
+app.use("/api/v1/payment", authntication, paymentRouter);
+
+// Front Side routes
+app.use("/api/v1/cust", custRoute);
+app.use("/api/v1/vehi", vehiRoute);
 
 connectionToDB(process.env.MONGO_URL).then(() => {
   app.listen(process.env.PORT, () => {

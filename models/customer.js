@@ -22,14 +22,15 @@ const customerSchema = mongoose.Schema(
         message: "Invalid email",
       },
     },
+    password: {
+      type: String,
+    },
     contact: {
       type: Number,
-      required: true,
     },
     comp_id: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Company",
-      required: true,
     },
     cust_type: {
       type: String,
@@ -51,6 +52,11 @@ const customerSchema = mongoose.Schema(
     },
     business: {
       type: String,
+    },
+    role: {
+      type: String,
+      enum: ["CLIENT", "MAIN", "AUX", "BASIC"],
+      default: "BASIC", // Set a default role if not provided
     },
     sub_id: {
       type: mongoose.Schema.Types.ObjectId,

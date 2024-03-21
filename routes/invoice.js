@@ -5,10 +5,12 @@ const { deleteInvoiceById } = require("../controllers/invoice/deleteInvoiceById"
 const { updateInvoiceById } = require("../controllers/invoice/updateInvoiceById");
 const { getInvoicelist } = require("../controllers/invoice/getInvoicelist");
 const { invoiceNumber } = require("../controllers/invoice/invoicenumber");
+const { addpaymentInvoice } = require("../controllers/invoice/addpaymentInvoice");
 
 const router = Router();
 
 router.post("/add", addInvoice);
+router.post("/payment/add", addpaymentInvoice);
 router.get("/invoicenumber", invoiceNumber);
 router.get("/:id", getInvoiceById);
 router.delete("/:id", deleteInvoiceById);

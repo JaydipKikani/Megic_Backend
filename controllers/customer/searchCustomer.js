@@ -1,6 +1,6 @@
 const { Customer } = require("../../models/customer");
 const searchCustomer = async (req, res) => {
-  const { customername, comp_id, sub_id } = req.body;
+  const { customername, comp_id, sub_id, roles } = req.body;
   try {
     const query = {};
 
@@ -17,6 +17,10 @@ const searchCustomer = async (req, res) => {
     if (sub_id) {
       query.sub_id = sub_id;
     }
+    if (roles && roles.length > 0) {
+      query.role = { $in: roles.map(role => role.toUpperCase()) }; // Ensure case-insensitive search
+    }
+
     const result = await Customer.find(query)
       .populate("comp_id", "name")
       .populate("sub_id", "subscription_name");

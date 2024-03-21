@@ -10,6 +10,8 @@ const { getExteriorStripeList } = require("../controllers/check/getExteriorStrip
 const { getInteriorStripeList } = require("../controllers/check/getInteriorStripeList");
 const { getInteriorPartsList } = require("../controllers/check/getInteriorPartsList");
 const { getExteriorPartsList } = require("../controllers/check/getExteriorPartsList");
+const { getCheckinList } = require("../controllers/check/getCheckinList");
+const { addCheckin } = require("../controllers/check/addCheckin");
 const router = Router();
 
 const damageFields = Array.from({ length: 10 }, (_, index) => ({
@@ -28,7 +30,9 @@ router.get("/listdata/exterior-element", getExteriorElementList);
 router.get("/listdata/interior-parts", getInteriorPartsList);
 router.get("/listdata/interior-stripe", getInteriorStripeList);
 router.get("/", getCheckList);
-     
+router.get("/listdata/checkin", getCheckinList);
+router.post("/addcheckin", addCheckin);
+
 module.exports = {
   checkRouter: router,
 };

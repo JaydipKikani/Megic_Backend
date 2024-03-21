@@ -45,5 +45,5 @@ const deleteDocumentById = async (req, res) => {
 };
 
 module.exports = {
-    deleteDocumentById,
+  deleteDocumentById,
 };

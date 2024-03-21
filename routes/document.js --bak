@@ -1,0 +1,83 @@
+
+const express = require("express");
+const router = express.Router();
+const createMulterInstance = require("../middlewares/document");
+const { addDocument } = require("../controllers/document/addDocument");
+const { updateDocument } = require("../controllers/document/updateDocument");
+const { getDocumentById } = require("../controllers/document/getDocumentbyId");
+const { deleteDocument } = require("../controllers/document/deleteDocument");
+const { deleteDocumentById } = require("../controllers/document/deleteDocumentById");
+
+
+const upload = createMulterInstance();
+
+// router.post('/add', (req, res, next) => {
+//     const index = req.body.variantsIndex || 0;
+//     req.body.variants = req.body.variants || [];
+//     req.body.variants.push({
+//         color: req.body.color,
+//         document: req.body.document
+//     });
+//     delete req.body.color;
+//     delete req.body.document;
+//     next();
+// }, (req, res, next) => {
+//     const numberOfFiles = 10;
+//     const fieldsArray = [];
+//     for (let i = 0; i < numberOfFiles; i++) {
+//         fieldsArray.push({ name: `variants[${i}][color]` }, { name: `variants[${i}][document]` });
+//     }
+
+//     upload.fields(fieldsArray)(req, res, (err) => {
+//         if (err) {
+//             console.error("Error uploading files:", err); // Log any upload error
+//             return res.status(500).json({
+//                 status: false,
+//                 error: true,
+//                 msg: "Error uploading files."
+//             });
+//         }
+//         next();
+//     });
+// }, addDocument);
+
+router.post('/add', upload.fields([
+    { name: 'variants[0][color]', maxCount: 1 },
+    { name: 'variants[0][document]', maxCount: 1 },
+    { name: 'variants[1][color]', maxCount: 1 },
+    { name: 'variants[1][document]', maxCount: 1 }]), addDocument);
+
+
+
+router.patch("/:id", (req, res, next) => {
+    const index = req.body.variantsIndex || 0;
+    req.body[`variants[${index}][document]`] = req.body.document;
+    delete req.body.document;
+    next();
+}, (req, res, next) => {
+    const numberOfFiles = 10; // Assuming a maximum of 10 files for update
+    const fieldsArray = [];
+    for (let i = 0; i < numberOfFiles; i++) {
+        fieldsArray.push({ name: `variants[${i}][document]` });
+    }
+
+    upload.fields(fieldsArray)(req, res, (err) => {
+        if (err) {
+            console.error("Error uploading files:", err); // Log any upload error
+            return res.status(500).json({
+                status: false,
+                error: true,
+                msg: "Error uploading files."
+            });
+        }
+        next();
+    });
+}, updateDocument);
+
+router.get("/:id", upload.array('document'), getDocumentById);
+router.delete("/:id", upload.array('document'), deleteDocument);
+router.delete("/gerenal/:id", upload.array('document'), deleteDocumentById);
+
+module.exports = {
+    documentRoute: router,
+};

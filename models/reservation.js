@@ -15,6 +15,9 @@ const reservationSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "Customer",
   },
+  vahical_type: {
+    type: String
+  },
   status: {
     type: String,
     required: true,

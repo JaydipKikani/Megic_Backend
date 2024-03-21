@@ -24,14 +24,6 @@ const addUser = async (req, res) => {
 
         const profilePhoto = req.file ? `/assets/profile/${req.file.filename}` : null;
 
-        // Validate the password
-        // if (!isValidPassword(password)) {
-        //     return res.status(400).json({
-        //         status: false,
-        //         error: true,
-        //         msg: "Invalid password. Please ensure it meets the specified requirements.",
-        //     });
-        // }
 
         const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -48,7 +40,7 @@ const addUser = async (req, res) => {
             country,
             language,
             password: hashedPassword,
-            profilePhoto,
+            profilePhoto
         });
 
         // Save the user to the database

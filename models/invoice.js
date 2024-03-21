@@ -13,6 +13,11 @@ const invoiceSchema = new mongoose.Schema(
       ref: "Customer",
       required: true,
     },
+    general_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "General",
+      required: true,
+    },
     invoice_id: { type: String, required: true, unique: true },
     billing_date: { type: Date, required: true },
     due_date: { type: Date, required: true },
@@ -21,6 +26,9 @@ const invoiceSchema = new mongoose.Schema(
     total_in_vat: { type: Number, required: true },
     paid: { type: Number, default: 0 },
     refunded: { type: Number, default: 0 },
+    status: { type: Number, default: 0 }, // 0-NotPaid 1-Paid
+    discount: { type: Number, default: 0 },
+    discount_per: { type: String },
     total_pay: { type: Number, required: true },
     notes: { type: String },
     productDetails: [
@@ -40,16 +48,34 @@ const productDetailSchema = new mongoose.Schema({
     ref: "Invoice",
     required: true,
   },
-  item_name: { type: String },
-  item_desc: { type: String, required: true },
-  price: { type: Number, required: true },
+  item_name: { type: String, required: true },
+  price: { type: Number },
   length: { type: Number },
   qty: { type: Number, required: true },
   p_vat: { type: Number },
+  period: { type: String },
   vat: { type: Number },
   total_ex_vat: { type: Number, required: true },
 });
 
 const ProductDetail = mongoose.model("ProductDetail", productDetailSchema);
 
-module.exports = { Invoice, ProductDetail };
+
+const invoicePaymentSchema = new mongoose.Schema(
+  {
+    invoice_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Invoice",
+      required: true,
+    },
+    amount: { type: Number, required: true },
+    pay_date: { type: Date, required: true },
+    pay_method: { type: String, required: true },
+    internal_payment_notes: { type: String },
+  },
+  { timestamps: true }
+);
+
+const InvoicePayment = mongoose.model("InvoicePayment", invoicePaymentSchema);
+
+module.exports = { Invoice, ProductDetail, InvoicePayment };

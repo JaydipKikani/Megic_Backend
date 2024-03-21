@@ -8,12 +8,14 @@ const {
     FinancialInfo,
     General,
     DamageMaintenance,
-    Damage
+    Damage,
+    OverviewInfo
 } = require("../../models/vehicle");
 
 const updateVehicle = async (req, res) => {
     const session = await mongoose.startSession();
     session.startTransaction();
+    let updatedDamages;
     try {
         const generalInfoId = req.params.id;
 
@@ -22,8 +24,7 @@ const updateVehicle = async (req, res) => {
             generalInfoId,
             {
                 $set: {
-                    ...req.body.generalInfo,
-                    tags: req.body.generalInfo.tags.map(tag => ({ name: tag.name, value: tag.value || null })),
+                    ...req.body.GeneralInfo,
                 },
             },
             { new: true }
@@ -32,44 +33,52 @@ const updateVehicle = async (req, res) => {
         // Update data in InsuranceInfo
         const updatedInsuranceInfo = await InsuranceInfo.findOneAndUpdate(
             { general_info: generalInfoId },
-            { $set: req.body.insuranceInfo },
+            { $set: req.body.InsuranceInfo },
             { new: true }
         );
 
         // Update data in Variables
         await Variables.deleteMany({ general_info: generalInfoId });
         const updatedVariables = await Variables.insertMany(
-            req.body.variables.map(variableData => ({ ...variableData, general_info: generalInfoId }))
+            req.body.Variables.map(variableData => ({ ...variableData, general_info: generalInfoId }))
         );
 
         // Update data in FinancialInfo
         const updatedFinancialInfo = await FinancialInfo.findOneAndUpdate(
             { general_info: generalInfoId },
-            { $set: req.body.financialInfo },
+            { $set: req.body.FinancialInfo },
             { new: true }
         );
 
         // Update data in General
         const updatedGeneral = await General.findOneAndUpdate(
             { general_info: generalInfoId },
-            { $set: req.body.general },
+            { $set: req.body.General },
             { new: true }
         );
 
         const updatedDamageMaintenance = await DamageMaintenance.findOneAndUpdate(
             { general_info: generalInfoId },
-            { $set: req.body.damageMaintenance },
+            { $set: req.body.DamageMaintenance },
             { new: true }
         );
 
+        // Remove existing damages
+        await Damage.deleteMany({ general_info: generalInfoId });
+        const updatedDamages = await Damage.insertMany(
+            req.body.Damages.map(damageData => ({ ...damageData, general_info: generalInfoId }))
+        );
 
-        await Damage.deleteMany({});
-        const updatedDamages = await Promise.all(req.body.damage.map(async damageData => {
-            const damage = new Damage({ ...damageData, general_info: generalInfoId });
-            const savedDamage = await damage.save();
-            return savedDamage;
-        }));
-
+        // Update data in OverviewInfo if req.body.Overview is not null
+        let updatedOverview;
+        if (req.body.Overview) {
+            const { _id, ...overviewData } = req.body.Overview; // Exclude _id field
+            updatedOverview = await OverviewInfo.findOneAndUpdate(
+                { general_info: generalInfoId },
+                { $set: overviewData }, // Use overviewData without _id
+                { new: true, upsert: true }
+            );
+        }
 
         await session.commitTransaction();
         session.endSession();
@@ -84,7 +93,8 @@ const updateVehicle = async (req, res) => {
                 FinancialInfo: updatedFinancialInfo,
                 General: updatedGeneral,
                 DamageMaintenance: updatedDamageMaintenance,
-                Damages: updatedDamages
+                Damages: updatedDamages || [],
+                Overview: updatedOverview || null
             }
         });
     } catch (error) {

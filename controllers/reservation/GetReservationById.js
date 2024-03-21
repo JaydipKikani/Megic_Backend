@@ -37,11 +37,20 @@ const getReservationById = async (req, res) => {
             path: "manufacturer",
             select: "name", // Include the fields you want from the Manufacturer model
           },
+          {
+            path: "general_info",
+            model: "GeneralInfo",
+            select: "license_plate damage_maintenance",
+          },
         ],
       })
       .populate({
         path: "customer_id",
         select: "firstname lastname",
+        populate: {
+          path: "driver_id",
+          select: "driver_first driver_last",
+        },
       });
 
     if (!reservation) {
@@ -52,11 +61,16 @@ const getReservationById = async (req, res) => {
       });
     }
 
+    const manufacturerName = reservation.general_id?.manufacturer?.name || "";
+    const modelName = reservation.general_id?.model?.name || "";
+    const licensePlate = reservation.general_id?.general_info?.license_plate || "";
+
+    const vahiclename = `${manufacturerName} ${modelName}: ${licensePlate}`;
     return res.status(200).json({
       status: true,
       error: false,
       msg: "Get Reservation Data By ID successfully.",
-      data: reservation,
+      data: { ...reservation._doc, vahiclename },
     });
   } catch (error) {
     return res.status(500).json({

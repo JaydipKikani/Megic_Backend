@@ -1,0 +1,163 @@
+// const { Document } = require("../../models/vehicle");
+// const { requireFieldErrorMessage } = require("../../services/validation");
+
+// const addDocument = async (req, res) => {
+//   try {
+//     const files = req.files;
+//     const { general_info, variants } = req.body;
+
+//     // Ensure variants is an array
+//     const variantsArray = Array.isArray(variants) ? variants : [variants];
+
+//     console.log("variants", variantsArray);
+
+//     if (!files || Object.keys(files).length === 0) {
+//       return res.status(400).json({
+//         status: false,
+//         error: true,
+//         msg: "No files were uploaded.",
+//       });
+//     }
+
+//     // Create an array to store color variants with associated documents
+//     const colorVariants = [];
+
+//     // Iterate through the variants provided in the request
+//     for (const variant of variantsArray) {
+//       const colorFile = files[variant.color];
+//       const documentFile = files[variant.document];
+
+//       // Check if files were uploaded for this variant
+//       if (!colorFile || !documentFile) {
+//         return res.status(400).json({
+//           status: false,
+//           error: true,
+//           msg: `Both color and document files are required for each variant.`,
+//         });
+//       }
+
+//       // Assuming each file corresponds to an image
+//       const colorPath = `/assets/color/${colorFile[0].filename}`;
+//       const documentPath = `/assets/document/${documentFile[0].filename}`;
+
+//       // Add the color and associated document to the colorVariants array
+//       colorVariants.push({ color: colorPath, document: documentPath });
+//     }
+
+//     // Create a new Document instance
+//     const document = new Document({
+//       general_info,
+//       variants: colorVariants,
+//     });
+
+//     // Save the document to the database
+//     const savedDocument = await document.save();
+
+//     // Return success response
+//     return res.status(201).json({
+//       status: true,
+//       error: false,
+//       msg: "Document added successfully",
+//       document: savedDocument,
+//     });
+//   } catch (error) {
+//     // Return error response
+//     console.error("Error adding document:", error);
+//     let errorMessage = error.message;
+
+//     if (error.name === "ValidationError") {
+//       errorMessage = requireFieldErrorMessage(error);
+//     }
+
+//     return res.status(500).json({
+//       status: false,
+//       error: true,
+//       msg: errorMessage,
+//     });
+//   }
+// };
+
+const addDocument = async (req, res) => {
+  try {
+    const files = req.files;
+    const { general_info, variants } = req.body;
+
+    // Ensure variants is an array
+    const variantsArray = Array.isArray(variants) ? variants : [variants];
+
+    console.log("variants", variantsArray);
+
+    if (!files || Object.keys(files).length === 0) {
+      return res.status(400).json({
+        status: false,
+        error: true,
+        msg: "No files were uploaded.",
+      });
+    }
+
+    // Create an array to store color variants with associated documents
+    const colorVariants = [];
+
+    // Iterate through the variants provided in the request
+    for (const variant of variantsArray) {
+      const colorFile = files[variant.color];
+      const documentFile = files[variant.document];
+
+      // Check if files were uploaded for this variant
+      if (!colorFile || !documentFile) {
+        return res.status(400).json({
+          status: false,
+          error: true,
+          msg: `Both color and document files are required for each variant.`,
+        });
+      }
+
+      // Assuming each file corresponds to an image
+      const colorPath = `/assets/color/${colorFile[0].filename}`;
+      const documentPath = `/assets/document/${documentFile[0].filename}`;
+
+      // Add the color and associated document to the colorVariants array
+      colorVariants.push({ color: colorPath, document: documentPath });
+    }
+
+    // Create a new Document instance
+    const document = new Document({
+      general_info,
+      variants: colorVariants,
+    });
+
+    // Save the document to the database
+    const savedDocument = await document.save();
+
+    // Return success response
+    return res.status(201).json({
+      status: true,
+      error: false,
+      msg: "Document added successfully",
+      document: savedDocument,
+    });
+  } catch (error) {
+    // Return error response
+    console.error("Error adding document:", error);
+    let errorMessage = error.message;
+
+    if (error.name === "ValidationError") {
+      errorMessage = requireFieldErrorMessage(error);
+    }
+
+    return res.status(500).json({
+      status: false,
+      error: true,
+      msg: errorMessage,
+    });
+  }
+};
+
+module.exports = {
+  addDocument,
+};
+
+
+// module.exports = {
+//   addDocument,
+// };

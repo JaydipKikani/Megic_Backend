@@ -44,6 +44,7 @@ const checkUser = async (req, res) => {
       zipcode: user.zipcode,
       country: user.country,
       language: user.language,
+      role: user.role,
       token,
     };
 

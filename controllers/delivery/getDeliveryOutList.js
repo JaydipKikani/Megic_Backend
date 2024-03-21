@@ -8,7 +8,7 @@ const getDeliveryOutList = async (req, res) => {
         const oneDayBefore = new Date(currentDate);
         oneDayBefore.setDate(currentDate.getDate() - 1);
         const twoDaysAfter = new Date(currentDate);
-        twoDaysAfter.setDate(currentDate.getDate() + 1);
+        twoDaysAfter.setDate(currentDate.getDate() + 7);
 
         const reservations = await Reservation.find({
             $or: [

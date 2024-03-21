@@ -37,11 +37,19 @@ const updateInvoiceById = async (req, res) => {
             await ProductDetail.insertMany(productDetailsWithBillId);
         }
 
+
+        // Calculate status based on paid amount and total pay
+        const status = (updatedInvoice.paid === updatedInvoice.total_pay) ? 1 : 0;
+
+        updatedInvoice.status = status;
+        await updatedInvoice.save();
+
         // You can also include the separately queried productDetails
         const productDetailData = await ProductDetail.find({ bill_id: invoiceId });
 
+
         const responseData = {
-            invoice: updatedInvoice,
+            invoice: { ...updatedInvoice.toObject(), status },
             ...(productDetails.length > 0 && { productDetailData }),
         };
 

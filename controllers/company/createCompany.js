@@ -20,8 +20,17 @@ const createCompany = async (req, res) => {
   }
   try {
     let company, billing, banking, misc;
-    company = await CompanyInfo.create(compnayDetails);
+
+    // Create the CompanyInfo model, including the vatno, regno, and vate_rate fields
+    company = await CompanyInfo.create({
+      ...compnayDetails,
+      vatno: compnayDetails.vatno,
+      regno: compnayDetails.regno,
+      vate_rate: compnayDetails.vate_rate,
+    });
+
     if (billingInfo) {
+      // Update the compid field for BillingInformation
       billing = await BillingInformation.create({
         ...billingInfo,
         compid: company._id,
@@ -29,11 +38,14 @@ const createCompany = async (req, res) => {
     }
 
     if (bankingInfo) {
+      // Update the compid field for BankingInformation
       banking = await BankingInformation.create({
         ...bankingInfo,
         compid: company._id,
       });
     }
+
+    // You may want to handle miscSett creation based on your schema
 
     return res.status(201).json({
       status: true,
@@ -43,7 +55,7 @@ const createCompany = async (req, res) => {
         company,
         billing,
         banking,
-        misc, 
+        misc,
       },
     });
   } catch (err) {

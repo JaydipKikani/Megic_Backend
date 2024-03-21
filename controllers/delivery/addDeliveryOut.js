@@ -1,11 +1,12 @@
 const express = require("express");
 const router = express.Router();
-const {Delivery} = require("../../models/delivery");
+const { Delivery } = require("../../models/delivery");
 const { Customer, Driver } = require("../../models/customer");
 const upload = require("../../middlewares/driver");
+const CheckData = require("../../models/checkdata");
 
 const addDeliveryOut = async (req, res) => {
-    const { km_counter, fuel_gauge, r_id, driver_id } = req.body;
+    const { km_counter, fuel_gauge, r_id, driver_id, status } = req.body;
 
     try {
         // Parse the fuel_gauge fraction
@@ -56,6 +57,8 @@ const addDeliveryOut = async (req, res) => {
 
             await driver.save();
 
+            await CheckData.findOneAndUpdate({ reservation_id: r_id }, { $set: { status } });
+
             res.status(200).json({
                 status: true,
                 error: false,
@@ -88,6 +91,8 @@ const addDeliveryOut = async (req, res) => {
             }
 
             await driver.save();
+
+            await CheckData.findOneAndUpdate({ reservation_id: r_id }, { $set: { status } }, { upsert: true });
 
             res.status(200).json({
                 status: true,

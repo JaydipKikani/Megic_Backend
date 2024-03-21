@@ -1,5 +1,6 @@
 const { Customer, Driver } = require("../../models/customer");
 const fs = require("fs");
+const bcrypt = require("bcrypt");
 
 const {
   requireFieldErrorMessege,
@@ -19,9 +20,18 @@ const createCustomer = async (req, res) => {
     driver_phone,
     driver_email,
     driver_dob,
+    password,
   } = customer;
   try {
-   
+    if (!password) {
+      return res.status(422).json({
+        status: false,
+        error: true,
+        msg: "Password field is blank or missing.",
+      });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
     const newDriver = await Driver.create({
       driver_first,
       driver_last,
@@ -37,7 +47,10 @@ const createCustomer = async (req, res) => {
     // Create a new customer with a reference to the driver
     const newCustomer = await Customer.create({
       ...customer,
-      driver_id: newDriver._id, 
+      driver_id: newDriver._id,
+      password: hashedPassword,
+      comp_id: customer.comp_id || null,
+      sub_id: customer.sub_id || null,
     });
 
 

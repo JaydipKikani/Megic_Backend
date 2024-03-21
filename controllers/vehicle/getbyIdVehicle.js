@@ -8,6 +8,7 @@ const {
   DamageMaintenance,
   Damage,
   Document,
+  OverviewInfo,
 } = require("../../models/vehicle");
 
 // List all FuelType entries
@@ -54,6 +55,8 @@ const getbyIdVehicle = async (req, res) => {
       general_info: generalInfoId,
     });
     const damages = await Damage.find({ general_info: generalInfoId });
+    const overview = await OverviewInfo.findOne({ general_info: generalInfoId });
+    const documents = await Document.findOne({ general_info: generalInfoId });
 
     return res.json({
       status: false,
@@ -67,6 +70,8 @@ const getbyIdVehicle = async (req, res) => {
         General: generalData,
         DamageMaintenance: damageMaintenance,
         Damages: damages,
+        Overview: overview,
+        Documents: documents ? documents.variants : null,
       },
     });
   } catch (error) {
